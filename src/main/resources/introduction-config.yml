@@ -2,12 +2,10 @@ template: Hello, %s!
 defaultName: Stranger
 logging:
     level: INFO
-    appenders:
-        -   type: console
-            threshold: INFO
-            target: stdout
-            logFormat: "%d{yyyy.MM.dd;HH:mm:ss.SSS} %-5p [%c] [%t] %m - %n"
     loggers:
+        org.hibernate.SQL: DEBUG # Show SQL statements
+        org.hibernate.type.descriptor.sql: TRACE # Show the binding parameter values
+        org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: INFO # Show internal information of session
         com.thierno.dropwizard.service:
             level: INFO
             additive: false
@@ -19,3 +17,8 @@ logging:
                     archivedFileCount: 30
                     totalSizeCap: 500MB
                     maxFileSize: 1KB
+    appenders:
+        -   type: console
+            threshold: ALL
+            target: stdout
+            logFormat: "%d{yyyy.MM.dd;HH:mm:ss.SSS} %-5p [%c] [%t] %m - %n"

@@ -38,6 +38,7 @@ public class HibernateUtil {
 				settings.put( Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread" );
 				settings.put( Environment.SHOW_SQL, "true" );
 				settings.put( Environment.FORCE_DISCRIMINATOR_IN_SELECTS_BY_DEFAULT, "true" );
+				settings.put( Environment.GENERATE_STATISTICS, "true" );
 
 				// Apply settings
 				registryBuilder.applySettings( settings );
