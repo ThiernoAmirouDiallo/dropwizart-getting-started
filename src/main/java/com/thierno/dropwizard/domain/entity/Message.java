@@ -1,4 +1,4 @@
-package com.thierno.dropwizard.entity;
+package com.thierno.dropwizard.domain.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

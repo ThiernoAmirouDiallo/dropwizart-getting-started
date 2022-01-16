@@ -1,6 +1,6 @@
 package com.thierno.dropwizard.db.util;
 
-import com.thierno.dropwizard.entity.Message;
+import com.thierno.dropwizard.domain.entity.Message;
 
 import java.util.EnumSet;
 import java.util.HashMap;
