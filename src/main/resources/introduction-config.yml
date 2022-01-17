@@ -1,3 +1,4 @@
+useJpa: false
 template: Hello, %s!
 defaultName: Stranger
 logging:
@@ -13,7 +14,7 @@ logging:
                 -   type: file
                     logFormat: "%d{yyyy.MM.dd;HH:mm:ss.SSS} %-5p [%c] [%t] %m - %n"
                     currentLogFilename: logs/rollingfile.log
-                    archivedLogFilenamePattern: logs/rollingfile.log%d{yyyy-MM-dd-HH:mm}.%i.log.gz
+                    archivedLogFilenamePattern: logs/rollingfile.log%d{yyyy-MM-dd-HH}.%i.log.gz
                     archivedFileCount: 30
                     totalSizeCap: 500MB
                     maxFileSize: 1KB

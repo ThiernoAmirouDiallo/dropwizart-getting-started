@@ -15,7 +15,7 @@ import org.hibernate.cfg.Environment;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.hibernate.tool.schema.TargetType;
 
-public class HibernateUtil {
+public class HibernateSessionFactoryUtil {
 
 	private static StandardServiceRegistry registry;
 	private static SessionFactory sessionFactory;

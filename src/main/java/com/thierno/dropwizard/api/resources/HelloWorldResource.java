@@ -1,7 +1,7 @@
 package com.thierno.dropwizard.api.resources;
 
 import com.codahale.metrics.annotation.Timed;
-import com.thierno.dropwizard.db.util.HibernateUtil;
+import com.thierno.dropwizard.db.util.HibernateSessionFactoryUtil;
 import com.thierno.dropwizard.model.Saying;
 import com.thierno.dropwizard.service.MessageService;
 import com.thierno.dropwizard.service.impl.MessageServiceImpl;
@@ -34,17 +34,17 @@ public class HelloWorldResource {
 
 	@GET()
 	@Timed
-	public Saying genarateSchemaDdl( @QueryParam("name") Optional<String> name ) {
+	public Saying sayHello( @QueryParam("name") Optional<String> name ) {
 		final String value = String.format( template, name.orElse( defaultName ) );
-		messageService.saveMessag( value );
+		messageService.saveMessage( value );
 		return new Saying( counter.incrementAndGet(), value );
 	}
 
 	@GET()
 	@Timed
 	@Path("genarateSchemaDdl")
-	public Saying sayHello() {
-		HibernateUtil.generateSchemaDDL();
+	public Saying genarateSchemaDdl() {
+		HibernateSessionFactoryUtil.generateSchemaDDL();
 		return new Saying( counter.incrementAndGet(), "Ok" );
 	}
 }

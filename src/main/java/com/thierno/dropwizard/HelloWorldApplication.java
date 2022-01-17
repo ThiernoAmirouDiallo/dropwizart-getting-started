@@ -3,6 +3,7 @@ package com.thierno.dropwizard;
 import com.thierno.dropwizard.api.resources.HelloWorldResource;
 import com.thierno.dropwizard.config.HelloWorldConfiguration;
 import com.thierno.dropwizard.health.TemplateHealthCheck;
+import com.thierno.dropwizard.service.impl.MessageServiceImpl;
 
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
@@ -30,6 +31,9 @@ public class HelloWorldApplication extends Application<HelloWorldConfiguration> 
 		final TemplateHealthCheck healthCheck = new TemplateHealthCheck( configuration.getTemplate() );
 		environment.jersey().register( resource );
 		environment.healthChecks().register( "template", healthCheck );
+
+		// todo change this when adding guice
+		MessageServiceImpl.USE_JPA = configuration.getUseJpa();
 	}
 
 }
