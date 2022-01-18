@@ -1,4 +1,4 @@
-useJpa: false
+useJpa: true
 template: Hello, %s!
 defaultName: Stranger
 logging:

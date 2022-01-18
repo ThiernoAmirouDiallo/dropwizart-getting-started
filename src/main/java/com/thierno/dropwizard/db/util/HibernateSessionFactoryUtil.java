@@ -1,7 +1,6 @@
 package com.thierno.dropwizard.db.util;
 
-import com.thierno.dropwizard.domain.entity.Message;
-
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,6 +39,8 @@ public class HibernateSessionFactoryUtil {
 				settings.put( Environment.FORCE_DISCRIMINATOR_IN_SELECTS_BY_DEFAULT, "true" );
 				settings.put( Environment.GENERATE_STATISTICS, "true" );
 
+				settings.put( Environment.HBM2DDL_AUTO, "update" );
+
 				// Apply settings
 				registryBuilder.applySettings( settings );
 
@@ -48,7 +49,7 @@ public class HibernateSessionFactoryUtil {
 
 				// Create MetadataSources
 				MetadataSources metadataSources = new MetadataSources( registry );
-				metadataSources.addAnnotatedClass( Message.class );
+				Arrays.asList( Constants.ENTITY_CLASSES ).forEach( metadataSources::addAnnotatedClass );
 
 				// Create Metadata
 				metadata = metadataSources.getMetadataBuilder().build();
@@ -74,6 +75,6 @@ public class HibernateSessionFactoryUtil {
 		schemaExport.setFormat( true );
 		schemaExport.setOverrideOutputFileContent();
 		schemaExport.setOutputFile( "db/generatedSchema.sql" );
-		schemaExport.createOnly( EnumSet.of( TargetType.SCRIPT ), metadata );
+		schemaExport.create( EnumSet.of( TargetType.SCRIPT ), metadata );
 	}
 }
