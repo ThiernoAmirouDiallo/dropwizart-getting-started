@@ -167,7 +167,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/hello-world",
+					"raw": "http://localhost:8080/hello-world?name=thierno",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -175,6 +175,59 @@
 					"port": "8080",
 					"path": [
 						"hello-world"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "thierno"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "genarateSchemaDdl",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/hello-world/genarateSchemaDdl",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"hello-world",
+						"genarateSchemaDdl"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "diallo",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "testHibernate",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/hello-world/testHibernate",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"hello-world",
+						"testHibernate"
 					],
 					"query": [
 						{

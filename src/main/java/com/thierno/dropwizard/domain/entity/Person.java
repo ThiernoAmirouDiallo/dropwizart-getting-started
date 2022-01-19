@@ -2,26 +2,30 @@ package com.thierno.dropwizard.domain.entity;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.Tolerate;
 
 @Entity
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor
 @EqualsAndHashCode
+@Builder
 public class Person {
 
 	@Id
@@ -46,4 +50,12 @@ public class Person {
 			@AttributeOverride(name = "city", column = @Column(name = "billing_city")),
 			@AttributeOverride(name = "postalCode", column = @Column(name = "billing_postalCode")) })
 	Address billingAddress;
+
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "country_id")
+	Country country;
+
+	@Tolerate
+	public Person() {
+	}
 }

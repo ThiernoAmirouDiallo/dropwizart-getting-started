@@ -4,4 +4,5 @@ public interface MessageService {
 
 	void saveMessage( String message );
 
+	void testHibernate();
 }

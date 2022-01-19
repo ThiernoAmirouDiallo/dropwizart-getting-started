@@ -47,5 +47,14 @@ public class HelloWorldResource {
 		HibernateSessionFactoryUtil.generateSchemaDDL();
 		return new Saying( counter.incrementAndGet(), "Ok" );
 	}
+
+	@GET()
+	@Timed
+	@Path("testHibernate")
+	public Saying testHibernate() {
+		HibernateSessionFactoryUtil.generateSchemaDDL();
+		messageService.testHibernate();
+		return new Saying( counter.incrementAndGet(), "Ok" );
+	}
 }
 

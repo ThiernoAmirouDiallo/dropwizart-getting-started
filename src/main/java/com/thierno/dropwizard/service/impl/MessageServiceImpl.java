@@ -2,7 +2,9 @@ package com.thierno.dropwizard.service.impl;
 
 import com.thierno.dropwizard.db.util.HibernateEntityManagerFactoryUtil;
 import com.thierno.dropwizard.db.util.HibernateSessionFactoryUtil;
+import com.thierno.dropwizard.domain.entity.Country;
 import com.thierno.dropwizard.domain.entity.Message;
+import com.thierno.dropwizard.domain.entity.Person;
 import com.thierno.dropwizard.service.MessageService;
 
 import javax.persistence.EntityManager;
@@ -23,6 +25,19 @@ public class MessageServiceImpl implements MessageService {
 		} else {
 			saveMessageSession( messageValue );
 		}
+	}
+
+	@Override
+	public void testHibernate() {
+		Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
+		session.beginTransaction();
+
+		Person person = Person.builder().firstName( "Thierno" ).lastName( "Diallo" ).country( session.get( Country.class, "GN" ) ).build();
+
+		session.save( person );
+
+		session.getTransaction().commit();
+		session.close();
 	}
 
 	private void saveMessageSession( String messageValue ) {

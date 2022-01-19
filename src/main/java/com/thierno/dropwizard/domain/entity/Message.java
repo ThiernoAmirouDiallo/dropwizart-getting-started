@@ -9,15 +9,14 @@ import javax.persistence.SequenceGenerator;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.Tolerate;
 
 @Entity
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor
 @EqualsAndHashCode
 public class Message {
 
@@ -28,4 +27,8 @@ public class Message {
 	Long id;
 
 	String message;
+
+	@Tolerate
+	public Message() {
+	}
 }
