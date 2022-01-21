@@ -8,6 +8,8 @@ import com.thierno.dropwizard.domain.entity.Country;
 import com.thierno.dropwizard.health.TemplateHealthCheck;
 import com.thierno.dropwizard.service.impl.MessageServiceImpl;
 
+import java.util.List;
+
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +46,9 @@ public class HelloWorldApplication extends Application<HelloWorldConfiguration> 
 		// todo change this when adding guice
 		MessageServiceImpl.USE_JPA = configuration.getUseJpa();
 
+		//dump schema ddl
+		HibernateSessionFactoryUtil.generateSchemaDDL();
+
 		// adding countries
 		ensureCountriesExist();
 	}
@@ -54,8 +59,11 @@ public class HelloWorldApplication extends Application<HelloWorldConfiguration> 
 		session.beginTransaction();
 
 		Constants.COUNTRY_LIST.forEach( country -> {
-			Country c = session.find( Country.class, country.getCode() );
-			if ( c == null ) {
+			List<Country> countries = session.createQuery("select c from Country c where c.code = :country_code")
+					.setParameter( "country_code", country.getCode())
+					.getResultList();
+
+			if ( countries.isEmpty() ) {
 				session.save( country );
 			}
 		} );

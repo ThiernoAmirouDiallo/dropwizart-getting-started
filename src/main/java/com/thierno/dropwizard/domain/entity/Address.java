@@ -18,7 +18,7 @@ import lombok.ToString;
 @Builder
 public class Address {
 
-	String street;
-	String city;
-	String postalCode;
+	private String street;
+	private String city;
+	private String postalCode;
 }

@@ -2,6 +2,7 @@ package com.thierno.dropwizard.db.util;
 
 import com.thierno.dropwizard.domain.entity.Country;
 import com.thierno.dropwizard.domain.entity.Message;
+import com.thierno.dropwizard.domain.entity.Passport;
 import com.thierno.dropwizard.domain.entity.Person;
 
 import java.util.ArrayList;
@@ -13,7 +14,8 @@ public class Constants {
 	public static final Class[] ENTITY_CLASSES = new Class[] { //
 			Message.class, //
 			Person.class, //
-			Country.class //
+			Country.class, //
+			Passport.class //
 	};
 
 	static {

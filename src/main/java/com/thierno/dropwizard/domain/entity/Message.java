@@ -24,9 +24,9 @@ public class Message {
 	@SequenceGenerator(name = "message_pk_sequence", sequenceName = "message_id_seq", allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "message_pk_sequence")
 	@Column(name = "id", unique = true, nullable = false)
-	Long id;
+	private Long id;
 
-	String message;
+	private String message;
 
 	@Tolerate
 	public Message() {
