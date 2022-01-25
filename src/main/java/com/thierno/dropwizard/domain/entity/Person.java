@@ -14,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 
@@ -35,8 +36,8 @@ public class Person {
 
 	@Id
 	@SequenceGenerator(name = "person_pk_sequence", sequenceName = "person_id_seq", allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "person_pk_sequence")
-	@Column(name = "id", unique = true, nullable = false)
+	//@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "person_pk_sequence")
+	//@Column(name = "id", unique = true, nullable = false)
 	private Long id;
 
 	private String firstName;
@@ -62,6 +63,7 @@ public class Person {
 
 	@OneToOne(cascade = { CascadeType.PERSIST })
 	@JoinColumn(name = "passport_id", unique = true)
+	@MapsId
 	Passport passport;
 
 	@Tolerate
