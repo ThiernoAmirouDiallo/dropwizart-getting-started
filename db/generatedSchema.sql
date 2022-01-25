@@ -15,6 +15,19 @@ create sequence passport_id_seq start 1 increment 1;
         primary key (id)
     );
 
+    create table Movie (
+       id int8 not null,
+        releaseDate date,
+        title varchar(255),
+        primary key (id)
+    );
+
+    create table movie_person (
+       movie_id int8 not null,
+        person_id int8 not null,
+        primary key (movie_id, person_id)
+    );
+
     create table Passport (
        id int8 not null,
         expirationDate date,
@@ -37,6 +50,16 @@ create sequence passport_id_seq start 1 increment 1;
 
     alter table Country 
        add constraint UK_qyh4l70f9l5k5jcv876rb4j89 unique (code);
+
+    alter table movie_person 
+       add constraint FKdhj2xkymhw5hqo93x2ukw6g58 
+       foreign key (person_id) 
+       references Movie;
+
+    alter table movie_person 
+       add constraint FKgv12xuc7jrmip6ynxoqa3jq3j 
+       foreign key (movie_id) 
+       references Person;
 
     alter table Person 
        add constraint FKat8ftpi85snasl6eciil1nqas 

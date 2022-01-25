@@ -5,11 +5,13 @@ import com.thierno.dropwizard.db.util.HibernateEntityManagerFactoryUtil;
 import com.thierno.dropwizard.db.util.HibernateSessionFactoryUtil;
 import com.thierno.dropwizard.domain.entity.Country;
 import com.thierno.dropwizard.domain.entity.Message;
+import com.thierno.dropwizard.domain.entity.Movie;
 import com.thierno.dropwizard.domain.entity.Passport;
 import com.thierno.dropwizard.domain.entity.Person;
 import com.thierno.dropwizard.service.MessageService;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -37,8 +39,8 @@ public class MessageServiceImpl implements MessageService {
 	}
 
 	@Override
-	public Person testHibernate() {
-		return oneToOneTest();
+	public List<Person> testHibernate() {
+		return manyToManyTest();
 	}
 
 	private List<Person> jpqlTest() {
@@ -88,6 +90,38 @@ public class MessageServiceImpl implements MessageService {
 		session.close();
 
 		return person;
+	}
+
+	private List<Person> manyToManyTest() {
+		Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
+		session.beginTransaction();
+
+		Movie movie1 = Movie.builder().title( "Money Hiest" ).build();
+		Movie movie2 = Movie.builder().title( "The Last Kingdom" ).build();
+
+		Person person1 = Person.builder().firstName( "Thierno" ) //
+				.lastName( "Diallo" ) //
+				.country( getCountByCode( "GN" ) ) //
+				.passport( Passport.builder().expirationDate( LocalDate.now().plusYears( 5 ).minusDays( 1 ) ).build() ) //
+				.build();
+		person1.getPassport().setPerson( person1 );
+		person1.getMovies().add( movie1 );
+		person1.getMovies().add( movie2 );
+		session.persist( person1 );
+
+		Person person2 = Person.builder().firstName( "Amirou" ) //
+				.lastName( "Diallo" ) //
+				.country( getCountByCode( "GN" ) ) //
+				.passport( Passport.builder().expirationDate( LocalDate.now().plusYears( 5 ).minusDays( 1 ) ).build() ) //
+				.build();
+		person2.getPassport().setPerson( person2 );
+		person2.getMovies().add( movie1 );
+		session.persist( person2 );
+
+		session.getTransaction().commit();
+		session.close();
+
+		return Arrays.asList(person1, person2);
 	}
 
 	private Country getCountByCode( String countryCode ) {

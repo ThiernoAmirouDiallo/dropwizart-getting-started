@@ -8,6 +8,7 @@ import com.thierno.dropwizard.model.Saying;
 import com.thierno.dropwizard.service.MessageService;
 import com.thierno.dropwizard.service.impl.MessageServiceImpl;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -53,7 +54,7 @@ public class HelloWorldResource {
 	@GET()
 	@Timed
 	@Path("testHibernate")
-	public Person testHibernate() throws JsonProcessingException {
+	public List<Person> testHibernate() throws JsonProcessingException {
 		return messageService.testHibernate();
 	}
 }

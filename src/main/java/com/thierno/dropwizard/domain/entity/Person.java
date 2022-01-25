@@ -3,16 +3,19 @@ package com.thierno.dropwizard.domain.entity;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
@@ -57,7 +60,7 @@ public class Person {
 			@AttributeOverride(name = "postalCode", column = @Column(name = "billing_postalCode")) })
 	private Address billingAddress;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.MERGE)
 	@JoinColumn(name = "country_id")
 	private Country country;
 
@@ -65,6 +68,14 @@ public class Person {
 	@JoinColumn(name = "passport_id", unique = true)
 	@MapsId
 	Passport passport;
+
+	@ManyToMany(cascade = CascadeType.PERSIST)
+	@JoinTable(name = "movie_person", //
+			joinColumns = { @JoinColumn(name = "movie_id") }, //
+			inverseJoinColumns = { @JoinColumn(name = "person_id") } //
+	)
+	@Builder.Default
+	Set<Movie> movies = new HashSet<>();
 
 	@Tolerate
 	public Person() {
