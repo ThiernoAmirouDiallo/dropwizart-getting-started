@@ -4,13 +4,17 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.thierno.dropwizard.model.Sexe;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -23,6 +27,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.UniqueConstraint;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -83,6 +88,16 @@ public class Person {
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	Sexe sexe;
+
+	@ElementCollection
+	@CollectionTable(name = "person_nickname", //
+			joinColumns = { @JoinColumn(name = "person_id") }, //
+			uniqueConstraints = { @UniqueConstraint(columnNames = { "person_id", "nickname" }) } //
+	)
+	@Column(name = "nickname")
+	@Builder.Default
+	Set<String> nicknames = new HashSet<>();
+	//Collection<Address> addresses = new ArrayList<>();
 
 	@Tolerate
 	public Person() {

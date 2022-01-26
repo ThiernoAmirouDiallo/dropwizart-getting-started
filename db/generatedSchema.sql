@@ -49,8 +49,16 @@ create sequence passport_id_seq start 1 increment 1;
         primary key (passport_id)
     );
 
+    create table person_nickname (
+       person_id int8 not null,
+        nickname varchar(255)
+    );
+
     alter table Country 
        add constraint UK_qyh4l70f9l5k5jcv876rb4j89 unique (code);
+
+    alter table person_nickname 
+       add constraint UKpvrermt7njldk4r3s2agf0e7q unique (person_id, nickname);
 
     alter table movie_person 
        add constraint FKdhj2xkymhw5hqo93x2ukw6g58 
@@ -71,3 +79,8 @@ create sequence passport_id_seq start 1 increment 1;
        add constraint FKbkmid3b13tkn6vbxfebweqlp3 
        foreign key (passport_id) 
        references Passport;
+
+    alter table person_nickname 
+       add constraint FKgplq5ckb8rjdw4i4kqtpj8wdu 
+       foreign key (person_id) 
+       references Person;

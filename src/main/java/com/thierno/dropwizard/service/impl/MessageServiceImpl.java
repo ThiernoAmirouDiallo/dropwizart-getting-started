@@ -109,6 +109,7 @@ public class MessageServiceImpl implements MessageService {
 		person1.getPassport().setPerson( person1 );
 		person1.getMovies().add( movie1 );
 		person1.getMovies().add( movie2 );
+		person1.getNicknames().add( "Server Engineer" );
 		session.persist( person1 );
 
 		Person person2 = Person.builder().firstName( "Amirou" ) //
@@ -119,6 +120,8 @@ public class MessageServiceImpl implements MessageService {
 				.build();
 		person2.getPassport().setPerson( person2 );
 		person2.getMovies().add( movie1 );
+		person2.getNicknames().add( "Programmer" );
+		person2.getNicknames().add( "SWE" );
 		session.persist( person2 );
 
 		session.getTransaction().commit();
