@@ -1,5 +1,6 @@
 create sequence child_id_seq start 1 increment 1;
 create sequence country_id_seq start 1 increment 1;
+create sequence department_id_seq start 1 increment 1;
 create sequence message_id_seq start 1 increment 1;
 create sequence passport_id_seq start 1 increment 1;
 
@@ -16,6 +17,19 @@ create sequence passport_id_seq start 1 increment 1;
         code varchar(255) not null,
         name varchar(255),
         primary key (id)
+    );
+
+    create table Department (
+       id int8 not null,
+        name varchar(255),
+        primary key (id)
+    );
+
+    create table Employee (
+       departement_id_fk int8 not null,
+        employee_name_cpk_col1 varchar(255) not null,
+        name varchar(255),
+        primary key (departement_id_fk, employee_name_cpk_col1)
     );
 
     create table Message (
@@ -79,6 +93,11 @@ create sequence passport_id_seq start 1 increment 1;
        add constraint FK30gejy1uwly6b5xu73ul5i5jt 
        foreign key (firstname_fk, lastname_fk) 
        references Parent;
+
+    alter table Employee 
+       add constraint FK28af9mbm1bxxrli1tcdt2xwoh 
+       foreign key (departement_id_fk) 
+       references Department;
 
     alter table movie_person 
        add constraint FKdhj2xkymhw5hqo93x2ukw6g58 

@@ -4,12 +4,15 @@ import com.thierno.dropwizard.db.util.HibernateEntityManagerFactoryUtil;
 import com.thierno.dropwizard.db.util.HibernateSessionFactoryUtil;
 import com.thierno.dropwizard.domain.entity.Child;
 import com.thierno.dropwizard.domain.entity.Country;
+import com.thierno.dropwizard.domain.entity.Department;
 import com.thierno.dropwizard.domain.entity.Message;
 import com.thierno.dropwizard.domain.entity.Movie;
 import com.thierno.dropwizard.domain.entity.Parent;
 import com.thierno.dropwizard.domain.entity.ParentCompositeId;
 import com.thierno.dropwizard.domain.entity.Passport;
 import com.thierno.dropwizard.domain.entity.Person;
+import com.thierno.dropwizard.domain.entity.Employee;
+import com.thierno.dropwizard.domain.entity.EmployeeCompositeId;
 import com.thierno.dropwizard.model.Sexe;
 import com.thierno.dropwizard.service.MessageService;
 
@@ -42,8 +45,8 @@ public class MessageServiceImpl implements MessageService {
 	}
 
 	@Override
-	public List<Child> testHibernate() {
-		return manyToOneAndEmbededIdTest();
+	public List<Employee> testHibernate() {
+		return manyToOneAndEmbededIdWithMapsIdTest();
 	}
 
 	private List<Child> manyToOneAndEmbededIdTest() {
@@ -68,6 +71,27 @@ public class MessageServiceImpl implements MessageService {
 		session.close();
 
 		return Arrays.asList( child );
+	}
+
+	private List<Employee> manyToOneAndEmbededIdWithMapsIdTest() {
+		Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
+		session.beginTransaction();
+
+		Department department = Department.builder().name( "IT" ) //
+				.build();
+
+		Employee employee = Employee.builder() //
+				.id( EmployeeCompositeId.builder().employeeName( "thiernoamiroudiallo" ).build() ) //
+				.name( "Thierno Amirou Diallo" )
+				.department( department ) //
+				.build();
+
+		session.persist( employee );
+
+		session.getTransaction().commit();
+		session.close();
+
+		return Arrays.asList( employee );
 	}
 
 	private List<Person> jpqlTest() {

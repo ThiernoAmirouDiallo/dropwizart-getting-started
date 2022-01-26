@@ -29,7 +29,6 @@ public class Parent {
 	@EmbeddedId
 	private ParentCompositeId id;
 
-
 	@OneToMany(mappedBy = "parent")
 	@Builder.Default
 	private Set<Child> children = new HashSet<>();
