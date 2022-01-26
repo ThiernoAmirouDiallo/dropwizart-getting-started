@@ -1,6 +1,15 @@
+create sequence child_id_seq start 1 increment 1;
 create sequence country_id_seq start 1 increment 1;
 create sequence message_id_seq start 1 increment 1;
 create sequence passport_id_seq start 1 increment 1;
+
+    create table Child (
+       id int8 not null,
+        name varchar(255),
+        firstname_fk varchar(255),
+        lastname_fk varchar(255),
+        primary key (id)
+    );
 
     create table Country (
        id int8 not null,
@@ -26,6 +35,12 @@ create sequence passport_id_seq start 1 increment 1;
        movie_id int8 not null,
         person_id int8 not null,
         primary key (movie_id, person_id)
+    );
+
+    create table Parent (
+       firstName varchar(255) not null,
+        lastName varchar(255) not null,
+        primary key (firstName, lastName)
     );
 
     create table Passport (
@@ -59,6 +74,11 @@ create sequence passport_id_seq start 1 increment 1;
 
     alter table person_nickname 
        add constraint UKpvrermt7njldk4r3s2agf0e7q unique (person_id, nickname);
+
+    alter table Child 
+       add constraint FK30gejy1uwly6b5xu73ul5i5jt 
+       foreign key (firstname_fk, lastname_fk) 
+       references Parent;
 
     alter table movie_person 
        add constraint FKdhj2xkymhw5hqo93x2ukw6g58 

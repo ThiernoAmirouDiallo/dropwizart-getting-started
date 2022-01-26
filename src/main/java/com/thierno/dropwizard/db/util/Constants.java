@@ -1,8 +1,10 @@
 package com.thierno.dropwizard.db.util;
 
+import com.thierno.dropwizard.domain.entity.Child;
 import com.thierno.dropwizard.domain.entity.Country;
 import com.thierno.dropwizard.domain.entity.Message;
 import com.thierno.dropwizard.domain.entity.Movie;
+import com.thierno.dropwizard.domain.entity.Parent;
 import com.thierno.dropwizard.domain.entity.Passport;
 import com.thierno.dropwizard.domain.entity.Person;
 
@@ -17,7 +19,9 @@ public class Constants {
 			Person.class, //
 			Country.class, //
 			Passport.class, //
-			Movie.class //
+			Movie.class, //
+			Parent.class, //
+			Child.class //
 	};
 
 	static {

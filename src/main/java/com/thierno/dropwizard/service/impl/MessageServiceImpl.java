@@ -2,9 +2,12 @@ package com.thierno.dropwizard.service.impl;
 
 import com.thierno.dropwizard.db.util.HibernateEntityManagerFactoryUtil;
 import com.thierno.dropwizard.db.util.HibernateSessionFactoryUtil;
+import com.thierno.dropwizard.domain.entity.Child;
 import com.thierno.dropwizard.domain.entity.Country;
 import com.thierno.dropwizard.domain.entity.Message;
 import com.thierno.dropwizard.domain.entity.Movie;
+import com.thierno.dropwizard.domain.entity.Parent;
+import com.thierno.dropwizard.domain.entity.ParentCompositeId;
 import com.thierno.dropwizard.domain.entity.Passport;
 import com.thierno.dropwizard.domain.entity.Person;
 import com.thierno.dropwizard.model.Sexe;
@@ -39,8 +42,32 @@ public class MessageServiceImpl implements MessageService {
 	}
 
 	@Override
-	public List<Person> testHibernate() {
-		return manyToManyTest();
+	public List<Child> testHibernate() {
+		return manyToOneAndEmbededIdTest();
+	}
+
+	private List<Child> manyToOneAndEmbededIdTest() {
+		Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
+		session.beginTransaction();
+
+		Parent parent = Parent.builder().id( //
+				ParentCompositeId.builder()//
+						.firstName( "Thierno" ) //
+						.lastName( "Diallo" ) //
+						.build() //
+		).build();
+
+		Child child = Child.builder() //
+				.name( "Child" ) //
+				.parent( parent ) //
+				.build();
+
+		session.persist( child );
+
+		session.getTransaction().commit();
+		session.close();
+
+		return Arrays.asList( child );
 	}
 
 	private List<Person> jpqlTest() {
