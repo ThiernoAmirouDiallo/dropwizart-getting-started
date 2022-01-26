@@ -44,6 +44,7 @@ create sequence passport_id_seq start 1 increment 1;
         home_postalCode varchar(255),
         home_street varchar(255),
         lastName varchar(255),
+        sexe varchar(255) not null,
         country_id int8,
         primary key (passport_id)
     );

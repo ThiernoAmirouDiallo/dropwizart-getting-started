@@ -1,6 +1,5 @@
 package com.thierno.dropwizard.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.thierno.dropwizard.db.util.HibernateEntityManagerFactoryUtil;
 import com.thierno.dropwizard.db.util.HibernateSessionFactoryUtil;
 import com.thierno.dropwizard.domain.entity.Country;
@@ -8,6 +7,7 @@ import com.thierno.dropwizard.domain.entity.Message;
 import com.thierno.dropwizard.domain.entity.Movie;
 import com.thierno.dropwizard.domain.entity.Passport;
 import com.thierno.dropwizard.domain.entity.Person;
+import com.thierno.dropwizard.model.Sexe;
 import com.thierno.dropwizard.service.MessageService;
 
 import java.time.LocalDate;
@@ -61,7 +61,7 @@ public class MessageServiceImpl implements MessageService {
 		Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
 		session.beginTransaction();
 
-		Person person = Person.builder().firstName( "Thierno" ).lastName( "Diallo" ).country( getCountByCode( "GN" ) ).build();
+		Person person = Person.builder().firstName( "Thierno" ).sexe( Sexe.MALE ).lastName( "Diallo" ).country( getCountByCode( "GN" ) ).build();
 
 		session.save( person );
 
@@ -77,6 +77,7 @@ public class MessageServiceImpl implements MessageService {
 
 		Person person = Person.builder().firstName( "Thierno" ) //
 				.lastName( "Diallo" ) //
+				.sexe( Sexe.MALE )
 				.country( getCountByCode( "GN" ) ) //
 				.passport( Passport.builder().expirationDate( LocalDate.now().plusYears( 5 ).minusDays( 1 ) ).build() ) //
 				.build();
@@ -101,6 +102,7 @@ public class MessageServiceImpl implements MessageService {
 
 		Person person1 = Person.builder().firstName( "Thierno" ) //
 				.lastName( "Diallo" ) //
+				.sexe( Sexe.MALE )
 				.country( getCountByCode( "GN" ) ) //
 				.passport( Passport.builder().expirationDate( LocalDate.now().plusYears( 5 ).minusDays( 1 ) ).build() ) //
 				.build();
@@ -111,6 +113,7 @@ public class MessageServiceImpl implements MessageService {
 
 		Person person2 = Person.builder().firstName( "Amirou" ) //
 				.lastName( "Diallo" ) //
+				.sexe( Sexe.FEMALE )
 				.country( getCountByCode( "GN" ) ) //
 				.passport( Passport.builder().expirationDate( LocalDate.now().plusYears( 5 ).minusDays( 1 ) ).build() ) //
 				.build();

@@ -2,6 +2,7 @@ package com.thierno.dropwizard.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.thierno.dropwizard.model.Sexe;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -12,6 +13,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -76,6 +79,10 @@ public class Person {
 	)
 	@Builder.Default
 	Set<Movie> movies = new HashSet<>();
+
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	Sexe sexe;
 
 	@Tolerate
 	public Person() {
