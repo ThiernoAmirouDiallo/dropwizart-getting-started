@@ -5,7 +5,7 @@ import com.thierno.dropwizard.domain.entity.Employee;
 
 import java.util.List;
 
-public interface MessageService {
+public interface HibernateService {
 
 	void saveMessage( String message );
 

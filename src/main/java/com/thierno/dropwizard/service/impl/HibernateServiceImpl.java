@@ -14,7 +14,7 @@ import com.thierno.dropwizard.domain.entity.Person;
 import com.thierno.dropwizard.domain.entity.Employee;
 import com.thierno.dropwizard.domain.entity.EmployeeCompositeId;
 import com.thierno.dropwizard.model.Sexe;
-import com.thierno.dropwizard.service.MessageService;
+import com.thierno.dropwizard.service.HibernateService;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -30,9 +30,9 @@ import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MessageServiceImpl implements MessageService {
+public class HibernateServiceImpl implements HibernateService {
 
-	Logger logger = LoggerFactory.getLogger( MessageServiceImpl.class );
+	Logger logger = LoggerFactory.getLogger( HibernateServiceImpl.class );
 	public static boolean USE_JPA = false;
 
 	@Override

@@ -4,9 +4,12 @@ import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.thierno.dropwizard.db.util.HibernateSessionFactoryUtil;
 import com.thierno.dropwizard.domain.entity.Employee;
+import com.thierno.dropwizard.domain.entity.Message;
 import com.thierno.dropwizard.model.Saying;
-import com.thierno.dropwizard.service.MessageService;
-import com.thierno.dropwizard.service.impl.MessageServiceImpl;
+import com.thierno.dropwizard.service.HibernateService;
+import com.thierno.dropwizard.service.JpaService;
+import com.thierno.dropwizard.service.impl.HibernateServiceImpl;
+import com.thierno.dropwizard.service.impl.JpaServiceImpl;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +30,8 @@ public class HelloWorldResource {
 	private final AtomicLong counter;
 
 	// todo inject this in the future
-	MessageService messageService = new MessageServiceImpl();
+	HibernateService hibernateService = new HibernateServiceImpl();
+	JpaService jpaService = new JpaServiceImpl();
 
 	public HelloWorldResource( String template, String defaultName ) {
 		this.template = template;
@@ -39,7 +43,7 @@ public class HelloWorldResource {
 	@Timed
 	public Saying sayHello( @QueryParam("name") Optional<String> name ) {
 		final String value = String.format( template, name.orElse( defaultName ) );
-		messageService.saveMessage( value );
+		hibernateService.saveMessage( value );
 		return new Saying( counter.incrementAndGet(), value );
 	}
 
@@ -55,7 +59,14 @@ public class HelloWorldResource {
 	@Timed
 	@Path("testHibernate")
 	public List<Employee> testHibernate() throws JsonProcessingException {
-		return messageService.testHibernate();
+		return hibernateService.testHibernate();
+	}
+
+	@GET()
+	@Timed
+	@Path("testJpa")
+	public Message testJpa() throws JsonProcessingException {
+		return jpaService.testJpa();
 	}
 }
 

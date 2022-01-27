@@ -214,6 +214,33 @@
 			"response": []
 		},
 		{
+			"name": "testJpa",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/hello-world/testJpa",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"hello-world",
+						"testJpa"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "diallo",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "testHibernate",
 			"request": {
 				"method": "GET",

@@ -31,11 +31,7 @@ public class JpaEntityManagerFactory {
 		this.entityClasses = entityClasses;
 	}
 
-	public EntityManager getEntityManager() {
-		return getEntityManagerFactory().createEntityManager();
-	}
-
-	protected EntityManagerFactory getEntityManagerFactory() {
+	public EntityManagerFactory getEntityManagerFactory() {
 		PersistenceUnitInfo persistenceUnitInfo = getPersistenceUnitInfo( getClass().getSimpleName() );
 		Map<String, Object> configuration = new HashMap<>();
 		return new EntityManagerFactoryBuilderImpl( new PersistenceUnitInfoDescriptor( persistenceUnitInfo ), configuration ).build();

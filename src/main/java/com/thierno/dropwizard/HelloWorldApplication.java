@@ -6,7 +6,7 @@ import com.thierno.dropwizard.db.util.Constants;
 import com.thierno.dropwizard.db.util.HibernateSessionFactoryUtil;
 import com.thierno.dropwizard.domain.entity.Country;
 import com.thierno.dropwizard.health.TemplateHealthCheck;
-import com.thierno.dropwizard.service.impl.MessageServiceImpl;
+import com.thierno.dropwizard.service.impl.HibernateServiceImpl;
 
 import java.util.List;
 
@@ -44,7 +44,7 @@ public class HelloWorldApplication extends Application<HelloWorldConfiguration> 
 		environment.healthChecks().register( "template", healthCheck );
 
 		// todo change this when adding guice
-		MessageServiceImpl.USE_JPA = configuration.getUseJpa();
+		HibernateServiceImpl.USE_JPA = configuration.getUseJpa();
 
 		//dump schema ddl
 		HibernateSessionFactoryUtil.generateSchemaDDL();
