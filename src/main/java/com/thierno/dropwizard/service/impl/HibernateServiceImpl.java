@@ -144,7 +144,7 @@ public class HibernateServiceImpl implements HibernateService {
 		return person;
 	}
 
-	private List<Person> manyToManyTest() {
+	public List<Person> manyToManyTest() {
 		Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
 		session.beginTransaction();
 

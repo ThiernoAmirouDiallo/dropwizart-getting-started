@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.thierno.dropwizard.model.Sexe;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,6 +17,7 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -26,6 +25,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.UniqueConstraint;
 
@@ -77,19 +77,20 @@ public class Person {
 	@MapsId
 	Passport passport;
 
-	@ManyToMany(cascade = CascadeType.PERSIST)
+	@ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
 	@JoinTable(name = "movie_person", //
 			joinColumns = { @JoinColumn(name = "movie_id") }, //
 			inverseJoinColumns = { @JoinColumn(name = "person_id") } //
 	)
 	@Builder.Default
+	@OrderBy("title DESC")
 	Set<Movie> movies = new HashSet<>();
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	Sexe sexe;
 
-	@ElementCollection
+	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "person_nickname", //
 			joinColumns = { @JoinColumn(name = "person_id") }, //
 			uniqueConstraints = { @UniqueConstraint(columnNames = { "person_id", "nickname" }) } //

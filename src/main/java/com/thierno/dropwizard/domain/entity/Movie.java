@@ -20,12 +20,13 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.Tolerate;
 
 @Entity
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = { "actors" })
 @Embeddable
 @Builder
 public class Movie {
@@ -44,4 +45,7 @@ public class Movie {
 	@JsonIgnore
 	Set<Person> actors = new HashSet<>();
 
+	@Tolerate
+	public Movie() {
+	}
 }

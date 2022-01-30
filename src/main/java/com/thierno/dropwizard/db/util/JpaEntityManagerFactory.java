@@ -52,7 +52,7 @@ public class JpaEntityManagerFactory {
 		properties.put( Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread" );
 		properties.put( Environment.SHOW_SQL, "true" );
 		properties.put( Environment.FORCE_DISCRIMINATOR_IN_SELECTS_BY_DEFAULT, "true" );
-		properties.put( Environment.GENERATE_STATISTICS, "true" );
+		properties.put( Environment.GENERATE_STATISTICS, "false" );
 		properties.put( Environment.DATASOURCE, getPGSimpleDataSource() );
 
 		properties.put( Environment.HBM2DDL_AUTO, "update" );

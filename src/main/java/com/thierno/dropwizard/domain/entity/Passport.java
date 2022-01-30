@@ -24,7 +24,7 @@ import lombok.experimental.Tolerate;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = { "person" })
 @Builder
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = Passport.class)
 public class Passport {

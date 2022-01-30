@@ -38,6 +38,7 @@ public class HibernateSessionFactoryUtil {
 				settings.put( Environment.SHOW_SQL, "true" );
 				settings.put( Environment.FORCE_DISCRIMINATOR_IN_SELECTS_BY_DEFAULT, "true" );
 				settings.put( Environment.GENERATE_STATISTICS, "true" );
+				settings.put( Environment.USE_IDENTIFIER_ROLLBACK, "true" ); // if true when em.remove(entity), entity id will reset to null
 
 				settings.put( Environment.HBM2DDL_AUTO, "update" );
 

@@ -1,14 +1,13 @@
 package com.thierno.dropwizard.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -17,11 +16,13 @@ import javax.persistence.SequenceGenerator;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.Tolerate;
 
 @Entity
 @Data
 @Builder
+@EqualsAndHashCode(exclude = { "people" })
 //@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = Country.class)
 public class Country {
 
@@ -37,7 +38,7 @@ public class Country {
 	private String name;
 
 	@JsonIgnore
-	@OneToMany(mappedBy = "country")
+	@OneToMany(mappedBy = "country", fetch = FetchType.LAZY)
 	private Set<Person> people = new HashSet<>();
 
 	@Tolerate

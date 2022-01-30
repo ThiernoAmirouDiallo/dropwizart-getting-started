@@ -8,6 +8,7 @@ import java.util.Set;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
 import lombok.Builder;
@@ -29,7 +30,7 @@ public class Parent {
 	@EmbeddedId
 	private ParentCompositeId id;
 
-	@OneToMany(mappedBy = "parent")
+	@OneToMany(mappedBy = "parent", fetch = FetchType.EAGER)
 	@Builder.Default
 	private Set<Child> children = new HashSet<>();
 
