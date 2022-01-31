@@ -26,15 +26,28 @@ public class JpaEntityManagerFactory {
 	private String DB_USER_NAME = System.getenv( "POSTGRES_USER" );
 	private String DB_PASSWORD = System.getenv( "POSTGRES_PASSWORD" );
 	private Class[] entityClasses;
+	private Map<String, String> namedQueriesMap;
 
-	public JpaEntityManagerFactory( Class[] entityClasses ) {
+	public JpaEntityManagerFactory( Class[] entityClasses, Map<String, String> namedQueriesMap ) {
 		this.entityClasses = entityClasses;
+		this.namedQueriesMap = namedQueriesMap;
 	}
 
 	public EntityManagerFactory getEntityManagerFactory() {
 		PersistenceUnitInfo persistenceUnitInfo = getPersistenceUnitInfo( getClass().getSimpleName() );
 		Map<String, Object> configuration = new HashMap<>();
-		return new EntityManagerFactoryBuilderImpl( new PersistenceUnitInfoDescriptor( persistenceUnitInfo ), configuration ).build();
+		EntityManagerFactory entityManagerFactory = new EntityManagerFactoryBuilderImpl( new PersistenceUnitInfoDescriptor( persistenceUnitInfo ), configuration ).build();
+
+		registerNamedQueries( entityManagerFactory );
+
+		return entityManagerFactory;
+	}
+
+	private void registerNamedQueries( EntityManagerFactory entityManagerFactory ) {
+		//registring named Queries
+		EntityManager em = entityManagerFactory.createEntityManager();
+		namedQueriesMap.forEach( ( name, query ) -> entityManagerFactory.addNamedQuery( name, em.createQuery( query ) ) );
+		em.close();
 	}
 
 	protected HibernatePersistenceUnitInfo getPersistenceUnitInfo( String name ) {

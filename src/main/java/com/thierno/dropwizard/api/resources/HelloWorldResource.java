@@ -4,7 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.thierno.dropwizard.db.util.HibernateSessionFactoryUtil;
 import com.thierno.dropwizard.domain.entity.Employee;
-import com.thierno.dropwizard.domain.entity.Person;
+import com.thierno.dropwizard.domain.entity.Parent;
 import com.thierno.dropwizard.model.Saying;
 import com.thierno.dropwizard.service.HibernateService;
 import com.thierno.dropwizard.service.JpaService;
@@ -65,7 +65,7 @@ public class HelloWorldResource {
 	@GET()
 	@Timed
 	@Path("testJpa")
-	public Person testJpa() throws JsonProcessingException {
+	public List<Parent> testJpa() throws JsonProcessingException {
 		return jpaService.testJpa();
 	}
 }

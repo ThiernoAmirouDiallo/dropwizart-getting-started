@@ -9,6 +9,7 @@ import java.util.Set;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.NamedQueries;
 import javax.persistence.OneToMany;
 
 import lombok.Builder;
@@ -22,9 +23,12 @@ import lombok.experimental.Tolerate;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = "children")
 @Builder
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = Parent.class)
+@NamedQueries({
+		//@NamedQuery(name = "findParentByLastName", query = "select parent from Parent as parent where parent.id.lastName = :lastName")
+})
 public class Parent {
 
 	@EmbeddedId

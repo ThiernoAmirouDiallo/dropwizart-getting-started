@@ -1,9 +1,11 @@
 package com.thierno.dropwizard.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.thierno.dropwizard.domain.entity.Person;
+import com.thierno.dropwizard.domain.entity.Parent;
+
+import java.util.List;
 
 public interface JpaService {
 
-	Person testJpa() throws JsonProcessingException;
+	List<Parent> testJpa() throws JsonProcessingException;
 }

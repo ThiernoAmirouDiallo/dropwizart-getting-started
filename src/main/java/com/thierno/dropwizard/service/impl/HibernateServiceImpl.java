@@ -19,6 +19,7 @@ import com.thierno.dropwizard.service.HibernateService;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -49,14 +50,14 @@ public class HibernateServiceImpl implements HibernateService {
 		return manyToOneAndEmbededIdWithMapsIdTest();
 	}
 
-	private List<Child> manyToOneAndEmbededIdTest() {
+	List<Child> manyToOneAndEmbededIdTest() {
 		Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
 		session.beginTransaction();
 
 		Parent parent = Parent.builder().id( //
 				ParentCompositeId.builder()//
 						.firstName( "Thierno" ) //
-						.lastName( "Diallo" ) //
+						.lastName( String.format( "Diallo_%s", UUID.randomUUID() ) ) //
 						.build() //
 		).build();
 
@@ -144,7 +145,7 @@ public class HibernateServiceImpl implements HibernateService {
 		return person;
 	}
 
-	public List<Person> manyToManyTest() {
+	List<Person> manyToManyTest() {
 		Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
 		session.beginTransaction();
 

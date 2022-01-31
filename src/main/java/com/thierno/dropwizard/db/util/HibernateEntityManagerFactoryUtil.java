@@ -7,7 +7,8 @@ public class HibernateEntityManagerFactoryUtil {
 
 	private static class EntityManagerHolder {
 
-		private static final EntityManagerFactory ENTITY_MANAGER_FACTORY = new JpaEntityManagerFactory( Constants.ENTITY_CLASSES ).getEntityManagerFactory();
+		private static final EntityManagerFactory ENTITY_MANAGER_FACTORY = new JpaEntityManagerFactory( Constants.ENTITY_CLASSES, Constants.NAMED_QUERIES_MAP ) //
+				.getEntityManagerFactory();
 	}
 
 	public static EntityManager getJpaEntityManager() {
