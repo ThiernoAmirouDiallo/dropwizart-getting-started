@@ -1,6 +1,7 @@
 package com.thierno.dropwizard.service.impl;
 
 import com.thierno.dropwizard.db.util.HibernateEntityManagerFactoryUtil;
+import com.thierno.dropwizard.domain.entity.Child;
 import com.thierno.dropwizard.domain.entity.Message;
 import com.thierno.dropwizard.domain.entity.Parent;
 import com.thierno.dropwizard.domain.entity.Person;
@@ -9,6 +10,7 @@ import com.thierno.dropwizard.service.JpaService;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.FlushModeType;
 import javax.persistence.Query;
 
 import org.hibernate.Hibernate;
@@ -63,14 +65,22 @@ public class JpaServiceImpl implements JpaService {
 				.setParameter( "lastName", firstAndLastNames.get( 0 )[1] ) //
 				.getSingleResult();
 
-		Parent parents2 = (Parent) entityManager.createNativeQuery( "select * from Parent as parent where parent.lastName = ?1", Parent.class ) //
+		Parent parent2 = (Parent) entityManager.createNativeQuery( "select * from Parent as parent where parent.lastName = ?1", Parent.class ) //
 				.setParameter( 1, "Diallo" ) //
 				.getSingleResult();
 
-		Parent parents3 = (Parent) entityManager.createNamedQuery( "findParentByLastName",
+		Parent parent3 = (Parent) entityManager.createNamedQuery( "findParentByLastName",
 						Parent.class ) // named queries defined by Constants.NAMED_QUERIES_MAP and in the Parent class level annotation @NamedQueries
 				.setParameter( "lastName", "Diallo" ) //
 				.getSingleResult();
+
+		Long peopleCount = (Long) entityManager.createQuery( "select count(person) from Person person" ).getSingleResult();
+
+		List<Child> studentList = entityManager.createQuery( "select child from Child child join child.parent parent" ).getResultList();
+		List<Child> studentList2 = entityManager.createQuery( "select child from Child child left join child.parent parent", Child.class ).getResultList();
+		List<Child> studentList3 = entityManager.createQuery( "select child from Child child join fetch child.parent parent", Child.class ).getResultList();
+
+		//entityManager.setFlushMode( FlushModeType.AUTO ); // AUTO (commit befor issuing queries to database)|COMMIT
 
 		entityManager.getTransaction().commit();
 		entityManager.close();
