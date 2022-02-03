@@ -7,11 +7,17 @@ import com.thierno.dropwizard.domain.entity.Parent;
 import com.thierno.dropwizard.domain.entity.Person;
 import com.thierno.dropwizard.service.JpaService;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
-import javax.persistence.FlushModeType;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Root;
 
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
@@ -24,8 +30,8 @@ public class JpaServiceImpl implements JpaService {
 	public static boolean USE_JPA = false;
 
 	@Override
-	public List<Parent> testJpa() {
-		return jpqlAndHqlTest();
+	public List<String[]> testJpa() {
+		return jpaCriteriaApiTestSelectMultipleFields();
 	}
 
 	private Person testOrderBy() {
@@ -43,6 +49,82 @@ public class JpaServiceImpl implements JpaService {
 		logger.info( "Using JPA EntityManager - logging using logback" );
 
 		return person;
+	}
+
+	private List<Parent> jpaCriteriaApiSelectEntity() {
+		new HibernateServiceImpl().manyToOneAndEmbededIdTest();
+
+		EntityManager entityManager = HibernateEntityManagerFactoryUtil.getJpaEntityManager();
+		entityManager.getTransaction().begin();
+
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+
+		CriteriaQuery<Parent> parentCriteriaQuery = criteriaBuilder.createQuery( Parent.class );
+		Root<Parent> parentRoot = parentCriteriaQuery.from( Parent.class );
+		//Path<Parent> name = parentRoot.get( "name" );
+		parentCriteriaQuery.select( parentRoot );
+
+		TypedQuery<Parent> query = entityManager.createQuery( parentCriteriaQuery );
+
+		List<Parent> parents = query.getResultList();
+
+		entityManager.getTransaction().commit();
+		entityManager.close();
+
+		return parents;
+	}
+
+	private List<String> jpaCriteriaApiTestSelectOneField() {
+		new HibernateServiceImpl().manyToOneAndEmbededIdTest();
+
+		EntityManager entityManager = HibernateEntityManagerFactoryUtil.getJpaEntityManager();
+		entityManager.getTransaction().begin();
+
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+
+		CriteriaQuery<String> parentCriteriaQuery = criteriaBuilder.createQuery( String.class );
+		Root<Parent> parentRoot = parentCriteriaQuery.from( Parent.class );
+		Path<String> firstName = parentRoot.get( "id" ).get( "firstName" );
+		parentCriteriaQuery.select( firstName );
+
+		TypedQuery<String> query = entityManager.createQuery( parentCriteriaQuery );
+
+		List<String> names = query.getResultList();
+
+		entityManager.getTransaction().commit();
+		entityManager.close();
+
+		return names;
+	}
+
+	private List<String[]> jpaCriteriaApiTestSelectMultipleFields() {
+		new HibernateServiceImpl().manyToOneAndEmbededIdTest();
+
+		EntityManager entityManager = HibernateEntityManagerFactoryUtil.getJpaEntityManager();
+		entityManager.getTransaction().begin();
+
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+
+		CriteriaQuery<Object[]> parentCriteriaQuery = criteriaBuilder.createQuery( Object[].class );
+		Root<Parent> parentRoot = parentCriteriaQuery.from( Parent.class );
+		Path<String> firstName = parentRoot.get( "id" ).get( "firstName" );
+		Path<String> lastName = parentRoot.get( "id" ).get( "lastName" );
+
+		//parentCriteriaQuery.select( parentRoot.get( "id" ) ); // would return List<ParentCompositeId>
+
+		//parentCriteriaQuery.select( criteriaBuilder.array( firstName, lastName ) );
+		parentCriteriaQuery.multiselect( firstName, lastName );
+
+		TypedQuery<Object[]> query = entityManager.createQuery( parentCriteriaQuery );
+
+		List<Object[]> names = query.getResultList();
+
+		entityManager.getTransaction().commit();
+		entityManager.close();
+
+		return names.stream() //
+				.map( objects -> Arrays.copyOf( objects, objects.length, String[].class ) ) //
+				.collect( Collectors.toList() );
 	}
 
 	private List<Parent> jpqlAndHqlTest() {
