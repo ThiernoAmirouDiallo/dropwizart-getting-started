@@ -65,7 +65,7 @@ public class HelloWorldResource {
 	@GET()
 	@Timed
 	@Path("testJpa")
-	public List<String[]> testJpa() throws JsonProcessingException {
+	public List<Parent> testJpa() throws JsonProcessingException {
 		return jpaService.testJpa();
 	}
 }

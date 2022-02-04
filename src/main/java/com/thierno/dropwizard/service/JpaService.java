@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface JpaService {
 
-	List<String[]> testJpa() throws JsonProcessingException;
+	List<Parent> testJpa() throws JsonProcessingException;
 }

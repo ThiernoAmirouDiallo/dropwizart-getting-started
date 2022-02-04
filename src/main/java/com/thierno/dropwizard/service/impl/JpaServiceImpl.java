@@ -16,6 +16,7 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Fetch;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 
@@ -30,8 +31,8 @@ public class JpaServiceImpl implements JpaService {
 	public static boolean USE_JPA = false;
 
 	@Override
-	public List<String[]> testJpa() {
-		return jpaCriteriaApiTestSelectMultipleFields();
+	public List<Parent> testJpa() {
+		return jpaCriteriaApiFilteringAndJoiningResult();
 	}
 
 	private Person testOrderBy() {
@@ -95,6 +96,45 @@ public class JpaServiceImpl implements JpaService {
 		entityManager.close();
 
 		return names;
+	}
+
+	private List<Parent> jpaCriteriaApiFilteringAndJoiningResult() {
+		new HibernateServiceImpl().manyToOneAndEmbededIdTest();
+
+		EntityManager entityManager = HibernateEntityManagerFactoryUtil.getJpaEntityManager();
+		entityManager.getTransaction().begin();
+
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+
+		CriteriaQuery<Parent> parentCriteriaQuery = criteriaBuilder.createQuery( Parent.class ) //
+				//.distinct( true ) // remove duplicate in the join of parents that have multiple children
+				;
+
+		Root<Parent> parentRoot = parentCriteriaQuery.from( Parent.class );
+		//Join<Parent, Child> parentChildJoin = parentRoot.join( "children" ); // parentRoot.join( "child", JoinType.LEFT)
+		Fetch<Parent, Child> parentChildFetch = parentRoot.fetch( "children" ); // to fetch eagerly or parentRoot.fetch( "child", JoinType.LEFT)
+
+		//parentCriteriaQuery.select( criteriaBuilder.count( parentRoot ) );
+		//parentCriteriaQuery.select( criteriaBuilder.max(  parentRoot.get( "id" ).get("firstName") ) );
+		parentCriteriaQuery.select( parentRoot );
+
+		Path<String> firstName = parentRoot.get( "id" ).get( "firstName" );
+		Path<String> lastName = parentRoot.get( "id" ).get( "lastName" );
+		//parentCriteriaQuery.where( criteriaBuilder.equal( firstName, "Thierno" ) );
+		parentCriteriaQuery.where( //
+				criteriaBuilder.and( //
+						criteriaBuilder.like( firstName, "Thier%" ), //
+						criteriaBuilder.equal( lastName, criteriaBuilder.parameter( String.class, "lastName" ) ) ) );
+
+		TypedQuery<Parent> query = entityManager.createQuery( parentCriteriaQuery ) //
+				.setParameter( "lastName", "Diallo" );
+
+		List<Parent> parents = query.getResultList();
+
+		entityManager.getTransaction().commit();
+		entityManager.close();
+
+		return parents;
 	}
 
 	private List<String[]> jpaCriteriaApiTestSelectMultipleFields() {
