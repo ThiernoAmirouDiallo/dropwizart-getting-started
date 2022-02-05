@@ -41,7 +41,7 @@ public class Movie {
 	LocalDate releaseDate;
 
 	@ManyToMany(mappedBy = "movies")
-	@Builder.Default
+	@Builder.Default()
 	@JsonIgnore
 	Set<Person> actors = new HashSet<>();
 

@@ -5,6 +5,9 @@ import com.thierno.dropwizard.domain.entity.Child;
 import com.thierno.dropwizard.domain.entity.Message;
 import com.thierno.dropwizard.domain.entity.Parent;
 import com.thierno.dropwizard.domain.entity.Person;
+import com.thierno.dropwizard.domain.entity.inhetancemapping.Animal;
+import com.thierno.dropwizard.domain.entity.inhetancemapping.Cat;
+import com.thierno.dropwizard.domain.entity.inhetancemapping.Dog;
 import com.thierno.dropwizard.service.JpaService;
 
 import java.util.Arrays;
@@ -31,8 +34,8 @@ public class JpaServiceImpl implements JpaService {
 	public static boolean USE_JPA = false;
 
 	@Override
-	public List<Parent> testJpa() {
-		return jpaCriteriaApiFilteringAndJoiningResult();
+	public List<Animal> testJpa() {
+		return jpaInheritenceMappingTest();
 	}
 
 	private Person testOrderBy() {
@@ -135,6 +138,37 @@ public class JpaServiceImpl implements JpaService {
 		entityManager.close();
 
 		return parents;
+	}
+
+	private List<Animal> jpaInheritenceMappingTest() {
+		EntityManager entityManager = HibernateEntityManagerFactoryUtil.getJpaEntityManager();
+		entityManager.getTransaction().begin();
+
+		Animal dog = Dog.builder() //
+				.name( "Dogy" ).build();
+
+		Animal cat = Cat.builder() //
+				.name( "Caty" ).build();
+
+		entityManager.persist( dog );
+		entityManager.persist( cat );
+
+		List<Animal> animals = entityManager.createQuery( "select animal FROM Animal animal", Animal.class ).getResultList();
+
+		Dog fetchedDog = entityManager.createQuery( "select dog FROM Dog dog", Dog.class ) //
+				.setFirstResult( 0 ) //
+				.setMaxResults( 1 ) //
+				.getSingleResult();
+
+		Cat FetchedCat = entityManager.createQuery( "select cat FROM Cat cat", Cat.class ) //
+				.setFirstResult( 0 ) //
+				.setMaxResults( 1 ) //
+				.getSingleResult();
+
+		entityManager.getTransaction().commit();
+		entityManager.close();
+
+		return animals;
 	}
 
 	private List<String[]> jpaCriteriaApiTestSelectMultipleFields() {

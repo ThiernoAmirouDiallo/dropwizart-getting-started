@@ -1,8 +1,16 @@
+create sequence animal_id_seq start 1 increment 1;
 create sequence child_id_seq start 1 increment 1;
 create sequence country_id_seq start 1 increment 1;
 create sequence department_id_seq start 1 increment 1;
 create sequence message_id_seq start 1 increment 1;
 create sequence passport_id_seq start 1 increment 1;
+
+    create table Animal (
+       DTYPE char(1) not null,
+        id int8 not null,
+        name varchar(255),
+        primary key (id)
+    );
 
     create table Child (
        id int8 not null,

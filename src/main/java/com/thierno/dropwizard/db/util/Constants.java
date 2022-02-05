@@ -9,6 +9,8 @@ import com.thierno.dropwizard.domain.entity.Movie;
 import com.thierno.dropwizard.domain.entity.Parent;
 import com.thierno.dropwizard.domain.entity.Passport;
 import com.thierno.dropwizard.domain.entity.Person;
+import com.thierno.dropwizard.domain.entity.inhetancemapping.Cat;
+import com.thierno.dropwizard.domain.entity.inhetancemapping.Dog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +29,9 @@ public class Constants {
 			Parent.class, //
 			Child.class, //
 			Employee.class, //
-			Department.class //
+			Department.class, //
+			Dog.class, //
+			Cat.class //
 	};
 
 	public static final Map<String, String> NAMED_QUERIES_MAP = new HashMap<String, String>() {{
