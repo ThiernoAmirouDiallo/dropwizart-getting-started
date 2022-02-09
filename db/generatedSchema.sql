@@ -2,8 +2,10 @@ create sequence animal_id_seq start 1 increment 1;
 create sequence child_id_seq start 1 increment 1;
 create sequence country_id_seq start 1 increment 1;
 create sequence department_id_seq start 1 increment 1;
+create sequence guide_id_seq start 1 increment 1;
 create sequence message_id_seq start 1 increment 1;
 create sequence passport_id_seq start 1 increment 1;
+create sequence student_id_seq start 1 increment 1;
 
     create table Animal (
        DTYPE char(1) not null,
@@ -38,6 +40,13 @@ create sequence passport_id_seq start 1 increment 1;
         employee_name_cpk_col1 varchar(255) not null,
         name varchar(255),
         primary key (departement_id_fk, employee_name_cpk_col1)
+    );
+
+    create table Guide (
+       id int8 not null,
+        firstName varchar(255),
+        lastName varchar(255),
+        primary key (id)
     );
 
     create table Message (
@@ -91,6 +100,13 @@ create sequence passport_id_seq start 1 increment 1;
         nickname varchar(255)
     );
 
+    create table Student (
+       id int8 not null,
+        name varchar(255),
+        guide_id int8,
+        primary key (id)
+    );
+
     alter table Country 
        add constraint UK_qyh4l70f9l5k5jcv876rb4j89 unique (code);
 
@@ -131,3 +147,8 @@ create sequence passport_id_seq start 1 increment 1;
        add constraint FKgplq5ckb8rjdw4i4kqtpj8wdu 
        foreign key (person_id) 
        references Person;
+
+    alter table Student 
+       add constraint FKb4ny3l3cnsxbbn601ev8mhlj5 
+       foreign key (guide_id) 
+       references Guide;

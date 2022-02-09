@@ -11,7 +11,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 
@@ -28,25 +27,22 @@ import lombok.experimental.Tolerate;
 @ToString
 @EqualsAndHashCode
 @Builder
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = Child.class)
-public class Child {
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = Student.class)
+public class Student {
 
 	@Id
-	@SequenceGenerator(name = "child_pk_sequence", sequenceName = "child_id_seq", allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "child_pk_sequence")
+	@SequenceGenerator(name = "student_pk_sequence", sequenceName = "student_id_seq", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "student_pk_sequence")
 	@Column(name = "id", unique = true, nullable = false)
 	private Long id;
 
 	private String name;
 
-	@ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY) // default FetchType is EAGER that produces N + 1 select problem
-	@JoinColumns({
-			@JoinColumn(name = "firstname_fk", referencedColumnName = "firstname"), //
-			@JoinColumn(name = "lastname_fk", referencedColumnName = "lastname") //
-	})
-	private Parent parent;
+	@ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+	@JoinColumn(name = "guide_id", referencedColumnName = "id") //
+	private Guide guide;
 
 	@Tolerate
-	public Child() {
+	public Student() {
 	}
 }

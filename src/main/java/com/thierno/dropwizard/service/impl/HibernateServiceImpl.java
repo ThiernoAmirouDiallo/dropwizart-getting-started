@@ -3,30 +3,35 @@ package com.thierno.dropwizard.service.impl;
 import com.thierno.dropwizard.db.util.HibernateEntityManagerFactoryUtil;
 import com.thierno.dropwizard.db.util.HibernateSessionFactoryUtil;
 import com.thierno.dropwizard.domain.entity.Child;
+import com.thierno.dropwizard.domain.entity.CompositeName;
 import com.thierno.dropwizard.domain.entity.Country;
 import com.thierno.dropwizard.domain.entity.Department;
+import com.thierno.dropwizard.domain.entity.Employee;
+import com.thierno.dropwizard.domain.entity.EmployeeCompositeId;
 import com.thierno.dropwizard.domain.entity.Message;
 import com.thierno.dropwizard.domain.entity.Movie;
 import com.thierno.dropwizard.domain.entity.Parent;
-import com.thierno.dropwizard.domain.entity.ParentCompositeId;
 import com.thierno.dropwizard.domain.entity.Passport;
 import com.thierno.dropwizard.domain.entity.Person;
-import com.thierno.dropwizard.domain.entity.Employee;
-import com.thierno.dropwizard.domain.entity.EmployeeCompositeId;
+import com.thierno.dropwizard.domain.entity.Student;
 import com.thierno.dropwizard.model.Sexe;
 import com.thierno.dropwizard.service.HibernateService;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import org.hibernate.ScrollMode;
+import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,8 +51,42 @@ public class HibernateServiceImpl implements HibernateService {
 	}
 
 	@Override
-	public List<Employee> testHibernate() {
-		return manyToOneAndEmbededIdWithMapsIdTest();
+	public List<Student> testHibernate() {
+		return batchFetchingWithScrolableResultTest();
+	}
+
+	private List<Student> batchFetchingWithScrolableResultTest() {
+		//adding some guides and students
+		new JpaServiceImpl().ensureStudentAndGuidesExist( 4 );
+
+		Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
+		session.beginTransaction();
+
+		CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+		CriteriaQuery<Student> studentCriteriaQuery = criteriaBuilder.createQuery( Student.class );
+		Root<Student> studentRoot = studentCriteriaQuery.from( Student.class );
+		studentRoot.fetch( "guide" );
+		studentCriteriaQuery.select( studentRoot );
+
+		TypedQuery<Student> query = session.createQuery( studentCriteriaQuery );
+		org.hibernate.query.Query<Student> hibernateQuery = query.unwrap( org.hibernate.query.Query.class );
+		hibernateQuery.setFetchSize( 5 );
+
+		ScrollableResults results = hibernateQuery.scroll( ScrollMode.FORWARD_ONLY );
+
+		List<Student> studentList = new ArrayList<>();
+
+		while ( results.next() ) {
+			Student currentStudent = (Student) results.get( 0 );
+
+			logger.info( "Current Student: {}", currentStudent );
+			studentList.add( currentStudent );
+		}
+
+		session.getTransaction().commit();
+		session.close();
+
+		return studentList;
 	}
 
 	List<Child> manyToOneAndEmbededIdTest() {
@@ -55,7 +94,7 @@ public class HibernateServiceImpl implements HibernateService {
 		session.beginTransaction();
 
 		Parent parent = Parent.builder().id( //
-				ParentCompositeId.builder()//
+				CompositeName.builder()//
 						.firstName( "Thierno" ) //
 						.lastName( String.format( "Diallo_%s", UUID.randomUUID() ) ) //
 						.build() //

@@ -2,9 +2,12 @@ package com.thierno.dropwizard.service.impl;
 
 import com.thierno.dropwizard.db.util.HibernateEntityManagerFactoryUtil;
 import com.thierno.dropwizard.domain.entity.Child;
+import com.thierno.dropwizard.domain.entity.CompositeName;
+import com.thierno.dropwizard.domain.entity.Guide;
 import com.thierno.dropwizard.domain.entity.Message;
 import com.thierno.dropwizard.domain.entity.Parent;
 import com.thierno.dropwizard.domain.entity.Person;
+import com.thierno.dropwizard.domain.entity.Student;
 import com.thierno.dropwizard.domain.entity.inhetancemapping.Animal;
 import com.thierno.dropwizard.domain.entity.inhetancemapping.Cat;
 import com.thierno.dropwizard.domain.entity.inhetancemapping.Dog;
@@ -34,8 +37,8 @@ public class JpaServiceImpl implements JpaService {
 	public static boolean USE_JPA = false;
 
 	@Override
-	public List<Animal> testJpa() {
-		return jpaInheritenceMappingTest();
+	public List<Student> testJpa() {
+		return jpaBatchAndFetchSizeTest();
 	}
 
 	private Person testOrderBy() {
@@ -140,6 +143,53 @@ public class JpaServiceImpl implements JpaService {
 		return parents;
 	}
 
+	private List<Student> jpaBatchAndFetchSizeTest() {
+		//adding some guides and students
+		ensureStudentAndGuidesExist( 4 );
+
+		EntityManager entityManager = HibernateEntityManagerFactoryUtil.getJpaEntityManager();
+		entityManager.getTransaction().begin();
+
+		//List<Student> students = entityManager.createQuery( "select s FROM Student s", Student.class ).getResultList();
+		List<Student> students = entityManager.createQuery( "select student FROM Student student left join fetch student.guide guide", Student.class ).getResultList();
+		//List<Guide> guides = entityManager.createQuery( "select guide FROM Guide guide join fetch guide.students", Guide.class ).getResultList();
+
+		for ( Student student : students ) {
+			logger.info( "Student: {}, Guide: {} {}", student.getName(), student.getGuide().getName().getFirstName(), student.getGuide().getName().getLastName() );
+		}
+
+		entityManager.getTransaction().commit();
+		entityManager.close();
+
+		return students;
+	}
+
+	void ensureStudentAndGuidesExist( int n ) {
+		EntityManager entityManager = HibernateEntityManagerFactoryUtil.getJpaEntityManager();
+		entityManager.getTransaction().begin();
+		entityManager.createQuery( "delete from Student s" ).executeUpdate();
+		entityManager.createQuery( "delete from Guide g" ).executeUpdate();
+
+		for ( int i = 0; i < n; i++ ) {
+			Guide guide = Guide.builder().name( //
+					CompositeName.builder()//
+							.firstName( "Thierno" ) //
+							.lastName( String.format( "Diallo_%s", i + 1 ) ) //
+							.build() //
+			).build();
+
+			Student student = Student.builder() //
+					.name( String.format( "Child_%s", i + 1 ) ) //
+					.guide( guide ) //
+					.build();
+
+			entityManager.persist( student );
+		}
+
+		entityManager.getTransaction().commit();
+		entityManager.close();
+	}
+
 	private List<Animal> jpaInheritenceMappingTest() {
 		EntityManager entityManager = HibernateEntityManagerFactoryUtil.getJpaEntityManager();
 		entityManager.getTransaction().begin();
@@ -235,6 +285,7 @@ public class JpaServiceImpl implements JpaService {
 		List<Child> studentList = entityManager.createQuery( "select child from Child child join child.parent parent" ).getResultList();
 		List<Child> studentList2 = entityManager.createQuery( "select child from Child child left join child.parent parent", Child.class ).getResultList();
 		List<Child> studentList3 = entityManager.createQuery( "select child from Child child join fetch child.parent parent", Child.class ).getResultList();
+		List<Child> studentList4 = entityManager.createQuery( "select child from Child child left join fetch child.parent parent", Child.class ).getResultList();
 
 		//entityManager.setFlushMode( FlushModeType.AUTO ); // AUTO (commit befor issuing queries to database)|COMMIT
 

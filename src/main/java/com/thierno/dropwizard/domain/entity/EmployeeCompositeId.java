@@ -11,6 +11,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.Tolerate;
 
 @Entity
 @Getter
@@ -28,4 +29,8 @@ public class EmployeeCompositeId implements Serializable {
 
 	@Column(name = "department_id_cpk_col2")
 	private Long departementId;
+
+	@Tolerate
+	public EmployeeCompositeId() {
+	}
 }

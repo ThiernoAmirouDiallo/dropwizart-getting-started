@@ -19,13 +19,13 @@ import lombok.experimental.Tolerate;
 @EqualsAndHashCode
 @Embeddable
 @Builder
-public class ParentCompositeId implements Serializable {
+public class CompositeName implements Serializable {
 
 	private static final long serialVersionUID = 5858083517781630155L;
 	private String firstName;
 	private String lastName;
 
 	@Tolerate
-	public ParentCompositeId() {
+	public CompositeName() {
 	}
 }

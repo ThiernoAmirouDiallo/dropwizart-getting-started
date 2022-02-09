@@ -29,10 +29,11 @@ import lombok.experimental.Tolerate;
 @NamedQueries({
 		//@NamedQuery(name = "findParentByLastName", query = "select parent from Parent as parent where parent.id.lastName = :lastName")
 })
+//@BatchSize(size = 3) // to improve N + 1 SELECTS problem when fecth Child.parent lazily
 public class Parent {
 
 	@EmbeddedId
-	private ParentCompositeId id;
+	private CompositeName id;
 
 	@OneToMany(mappedBy = "parent", fetch = FetchType.EAGER)
 	@Builder.Default

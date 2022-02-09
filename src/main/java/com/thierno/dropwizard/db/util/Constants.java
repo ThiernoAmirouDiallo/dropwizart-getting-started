@@ -4,11 +4,13 @@ import com.thierno.dropwizard.domain.entity.Child;
 import com.thierno.dropwizard.domain.entity.Country;
 import com.thierno.dropwizard.domain.entity.Department;
 import com.thierno.dropwizard.domain.entity.Employee;
+import com.thierno.dropwizard.domain.entity.Guide;
 import com.thierno.dropwizard.domain.entity.Message;
 import com.thierno.dropwizard.domain.entity.Movie;
 import com.thierno.dropwizard.domain.entity.Parent;
 import com.thierno.dropwizard.domain.entity.Passport;
 import com.thierno.dropwizard.domain.entity.Person;
+import com.thierno.dropwizard.domain.entity.Student;
 import com.thierno.dropwizard.domain.entity.inhetancemapping.Cat;
 import com.thierno.dropwizard.domain.entity.inhetancemapping.Dog;
 
@@ -31,7 +33,9 @@ public class Constants {
 			Employee.class, //
 			Department.class, //
 			Dog.class, //
-			Cat.class //
+			Cat.class, //
+			Student.class, //
+			Guide.class, //
 	};
 
 	public static final Map<String, String> NAMED_QUERIES_MAP = new HashMap<String, String>() {{
