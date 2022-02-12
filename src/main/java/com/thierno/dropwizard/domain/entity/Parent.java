@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.NamedQueries;
 import javax.persistence.OneToMany;
+import javax.persistence.Version;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -38,6 +39,9 @@ public class Parent {
 	@OneToMany(mappedBy = "parent", fetch = FetchType.EAGER)
 	@Builder.Default
 	private Set<Child> children = new HashSet<>();
+
+	@Version
+	private int version;
 
 	@Tolerate
 	public Parent() {

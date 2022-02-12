@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -37,8 +38,8 @@ public class JpaServiceImpl implements JpaService {
 	public static boolean USE_JPA = false;
 
 	@Override
-	public List<Student> testJpa() {
-		return jpaBatchAndFetchSizeTest();
+	public List<Parent> testJpa() {
+		return jpaCriteriaApiSelectEntity();
 	}
 
 	private Person testOrderBy() {
@@ -72,6 +73,7 @@ public class JpaServiceImpl implements JpaService {
 		parentCriteriaQuery.select( parentRoot );
 
 		TypedQuery<Parent> query = entityManager.createQuery( parentCriteriaQuery );
+		query.setLockMode( LockModeType.PESSIMISTIC_READ );
 
 		List<Parent> parents = query.getResultList();
 

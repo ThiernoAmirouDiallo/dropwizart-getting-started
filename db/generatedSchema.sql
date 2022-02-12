@@ -71,6 +71,7 @@ create sequence student_id_seq start 1 increment 1;
     create table Parent (
        firstName varchar(255) not null,
         lastName varchar(255) not null,
+        version int4 not null,
         primary key (firstName, lastName)
     );
 
