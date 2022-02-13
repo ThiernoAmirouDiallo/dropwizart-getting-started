@@ -1,13 +1,11 @@
 package com.thierno.dropwizard.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.thierno.dropwizard.domain.entity.Student;
-
-import java.util.List;
+import com.thierno.dropwizard.domain.entity.Message;
 
 public interface HibernateService {
 
 	void saveMessage( String message );
 
-	List<Student> testHibernate() throws JsonProcessingException;
+	Message testHibernate() throws JsonProcessingException;
 }

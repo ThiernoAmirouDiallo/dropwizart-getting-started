@@ -68,6 +68,13 @@ public class JpaEntityManagerFactory {
 		properties.put( Environment.GENERATE_STATISTICS, "false" );
 		properties.put( Environment.DATASOURCE, getPGSimpleDataSource() );
 
+		//L2 cache
+		properties.put( Environment.USE_SECOND_LEVEL_CACHE, "true" );
+		properties.put( Environment.JPA_SHARED_CACHE_MODE, "ENABLE_SELECTIVE" ); // enable for certain entities selectively not for all by default
+		properties.put( Environment.CACHE_REGION_FACTORY, "org.hibernate.cache.jcache.JCacheRegionFactory" ); // or properties.put( Environment.CACHE_REGION_FACTORY, "jcache" );
+		properties.put( "hibernate.javax.cache.provider", "org.ehcache.jsr107.EhcacheCachingProvider" );
+		properties.put( "hibernate.javax.cache.missing_cache_strategy", "create" );
+
 		properties.put( Environment.HBM2DDL_AUTO, "update" );
 
 		return properties;

@@ -1,11 +1,15 @@
 package com.thierno.dropwizard.domain.entity;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -18,6 +22,8 @@ import lombok.experimental.Tolerate;
 @Setter
 @ToString
 @EqualsAndHashCode
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Message {
 
 	@Id

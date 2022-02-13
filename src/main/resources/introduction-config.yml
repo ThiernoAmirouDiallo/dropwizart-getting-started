@@ -7,6 +7,9 @@ logging:
         org.hibernate.SQL: DEBUG # Show SQL statements
         org.hibernate.type.descriptor.sql: TRACE # Show the binding parameter values
         org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: INFO # Show internal information of session
+        #logging chaching
+        org.hibernate.cache: DEBUG
+        org.ehcache.cache: DEBUG
         com.thierno.dropwizard.service:
             level: INFO
             additive: false

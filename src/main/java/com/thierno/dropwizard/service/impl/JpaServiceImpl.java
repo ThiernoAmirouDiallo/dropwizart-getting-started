@@ -15,6 +15,7 @@ import com.thierno.dropwizard.service.JpaService;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -38,8 +39,8 @@ public class JpaServiceImpl implements JpaService {
 	public static boolean USE_JPA = false;
 
 	@Override
-	public List<Parent> testJpa() {
-		return jpaCriteriaApiSelectEntity();
+	public Message testJpa() {
+		return l2Caching();
 	}
 
 	private Person testOrderBy() {
@@ -81,6 +82,28 @@ public class JpaServiceImpl implements JpaService {
 		entityManager.close();
 
 		return parents;
+	}
+
+	private Message l2Caching() {
+		long messageId = new HibernateServiceImpl().saveMessageSession( String.format( "message id %s", UUID.randomUUID() ) );
+
+		EntityManager entityManager1 = HibernateEntityManagerFactoryUtil.getJpaEntityManager();
+		entityManager1.getTransaction().begin();
+
+		Message message1 = entityManager1.find( Message.class, messageId );
+
+		entityManager1.getTransaction().commit();
+		entityManager1.close();
+
+		EntityManager entityManager2 = HibernateEntityManagerFactoryUtil.getJpaEntityManager();
+		entityManager2.getTransaction().begin();
+
+		Message message2 = entityManager2.find( Message.class, messageId );
+
+		entityManager2.getTransaction().commit();
+		entityManager2.close();
+
+		return message1;
 	}
 
 	private List<String> jpaCriteriaApiTestSelectOneField() {

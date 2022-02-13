@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.Tolerate;
 
 @Entity
 @Getter
@@ -21,4 +22,8 @@ public class Address {
 	private String street;
 	private String city;
 	private String postalCode;
+
+	@Tolerate
+	public Address() {
+	}
 }

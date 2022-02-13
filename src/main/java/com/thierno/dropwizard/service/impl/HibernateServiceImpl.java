@@ -51,8 +51,30 @@ public class HibernateServiceImpl implements HibernateService {
 	}
 
 	@Override
-	public List<Student> testHibernate() {
-		return batchFetchingWithScrolableResultTest();
+	public Message testHibernate() {
+		return l2Caching();
+	}
+
+	private Message l2Caching() {
+		long messageId = saveMessageSession( String.format( "message id %s", UUID.randomUUID() ) );
+
+		Session session1 = HibernateSessionFactoryUtil.getSessionFactory().openSession();
+		session1.beginTransaction();
+
+		Message message1 = session1.find( Message.class, messageId );
+
+		session1.getTransaction().commit();
+		session1.close();
+
+		Session session2 = HibernateSessionFactoryUtil.getSessionFactory().openSession();
+		session2.beginTransaction();
+
+		Message message2 = session2.find( Message.class, messageId );
+
+		session2.getTransaction().commit();
+		session2.close();
+
+		return message1;
 	}
 
 	private List<Student> batchFetchingWithScrolableResultTest() {
@@ -239,7 +261,7 @@ public class HibernateServiceImpl implements HibernateService {
 		return results.isEmpty() ? null : results.get( 0 );
 	}
 
-	private void saveMessageSession( String messageValue ) {
+	long saveMessageSession( String messageValue ) {
 		Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
 		session.beginTransaction();
 		Message message = new Message();
@@ -248,6 +270,8 @@ public class HibernateServiceImpl implements HibernateService {
 		session.getTransaction().commit();
 		session.close();
 		logger.info( "Using Hibernate Session - logging using logback" );
+
+		return message.getId();
 	}
 
 	private void saveMessageJpa( String messageValue ) {
