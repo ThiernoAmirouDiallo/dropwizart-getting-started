@@ -74,6 +74,7 @@ public class JpaEntityManagerFactory {
 		properties.put( Environment.CACHE_REGION_FACTORY, "org.hibernate.cache.jcache.JCacheRegionFactory" ); // or properties.put( Environment.CACHE_REGION_FACTORY, "jcache" );
 		properties.put( "hibernate.javax.cache.provider", "org.ehcache.jsr107.EhcacheCachingProvider" );
 		properties.put( "hibernate.javax.cache.missing_cache_strategy", "create" );
+		properties.put( "hibernate.javax.cache.uri", "file:src/main/resources/ehcache.xml" );
 
 		properties.put( Environment.HBM2DDL_AUTO, "update" );
 

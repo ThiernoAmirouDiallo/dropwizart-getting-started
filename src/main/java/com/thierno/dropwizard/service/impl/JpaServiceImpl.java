@@ -1,6 +1,7 @@
 package com.thierno.dropwizard.service.impl;
 
 import com.thierno.dropwizard.db.util.HibernateEntityManagerFactoryUtil;
+import com.thierno.dropwizard.db.util.HibernateSessionFactoryUtil;
 import com.thierno.dropwizard.domain.entity.Child;
 import com.thierno.dropwizard.domain.entity.CompositeName;
 import com.thierno.dropwizard.domain.entity.Guide;
@@ -29,6 +30,8 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 
 import org.hibernate.Hibernate;
+import org.hibernate.SessionFactory;
+import org.hibernate.stat.Statistics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,12 +88,34 @@ public class JpaServiceImpl implements JpaService {
 	}
 
 	private Message l2Caching() {
-		long messageId = new HibernateServiceImpl().saveMessageSession( String.format( "message id %s", UUID.randomUUID() ) );
+		Long firstMessageId = null;
+		Long lastMessageId = null;
+		for ( int i = 0; i < 100; i++ ) {
+			long id = new HibernateServiceImpl().saveMessageSession( String.format( "message id %s", UUID.randomUUID() ) );
+			if ( firstMessageId == null ) {
+				firstMessageId = id;
+			}
+
+			lastMessageId = id;
+		}
+
+		//evicting last saved message from L2 Cache
+		HibernateSessionFactoryUtil.getSessionFactory().getCache().evict( Message.class, lastMessageId );
+		HibernateEntityManagerFactoryUtil.getJpaEntityManager().getEntityManagerFactory().getCache().evict( Message.class, lastMessageId );
 
 		EntityManager entityManager1 = HibernateEntityManagerFactoryUtil.getJpaEntityManager();
 		entityManager1.getTransaction().begin();
 
-		Message message1 = entityManager1.find( Message.class, messageId );
+		Statistics statistics = entityManager1.getEntityManagerFactory().unwrap( SessionFactory.class ).getStatistics();
+		statistics.setStatisticsEnabled( true );
+
+		// Message.class cache region in configured in ehcache.xml to hold 10 entries max
+		boolean firstIdInCache = entityManager1.getEntityManagerFactory().getCache().contains( Message.class, firstMessageId );
+		boolean lastIdInCache = entityManager1.getEntityManagerFactory().getCache().contains( Message.class, lastMessageId );
+		logger.info( "L2 cache contains firstMessage: {}", firstIdInCache );
+		logger.info( "L2 cache contains lastMessage: {}", lastIdInCache );
+
+		Message message1 = entityManager1.find( Message.class, firstMessageId );
 
 		entityManager1.getTransaction().commit();
 		entityManager1.close();
@@ -98,10 +123,12 @@ public class JpaServiceImpl implements JpaService {
 		EntityManager entityManager2 = HibernateEntityManagerFactoryUtil.getJpaEntityManager();
 		entityManager2.getTransaction().begin();
 
-		Message message2 = entityManager2.find( Message.class, messageId );
+		Message message2 = entityManager2.find( Message.class, firstMessageId );
 
 		entityManager2.getTransaction().commit();
 		entityManager2.close();
+
+		logger.info( "L2 cache statistics: {}", statistics.getCacheRegionStatistics( "com.thierno.dropwizard.domain.entity.Message" ) );
 
 		return message1;
 	}

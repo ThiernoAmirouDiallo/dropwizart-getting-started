@@ -1,0 +1,24 @@
+<config
+		xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+		xmlns='http://www.ehcache.org/v3'
+		xsi:schemaLocation="http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core-3.0.xsd">
+
+	<cache-template name="simple">
+		<expiry>
+			<ttl unit="minutes">2</ttl>
+		</expiry>
+		<heap>10</heap>
+	</cache-template>
+
+	<cache alias="com.thierno.dropwizard.domain.entity.Child" uses-template="simple" />
+
+	<cache alias="com.thierno.dropwizard.domain.entity.Message">
+		<!--		<key-type>org.hibernate.cache.internal.CacheKeyImplementation</key-type>-->
+		<!--		<value-type>org.hibernate.cache.spi.support.AbstractReadWriteAccess.Item</value-type>-->
+		<expiry>
+			<ttl unit="minutes">15</ttl>
+		</expiry>
+		<heap unit="entries">20</heap>
+	</cache>
+
+</config>

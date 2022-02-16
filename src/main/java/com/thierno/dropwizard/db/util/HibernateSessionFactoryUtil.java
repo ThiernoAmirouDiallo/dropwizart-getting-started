@@ -45,6 +45,7 @@ public class HibernateSessionFactoryUtil {
 				settings.put( Environment.JPA_SHARED_CACHE_MODE, "ENABLE_SELECTIVE" ); // enable for certain entities selectively not for all by default
 				settings.put( Environment.CACHE_REGION_FACTORY, "org.hibernate.cache.jcache.JCacheRegionFactory" ); // or settings.put( Environment.CACHE_REGION_FACTORY, "jcache" );
 				settings.put( "hibernate.javax.cache.provider", "org.ehcache.jsr107.EhcacheCachingProvider" );
+				settings.put( "hibernate.javax.cache.uri", "file:src/main/resources/ehcache.xml" );
 
 				settings.put( Environment.HBM2DDL_AUTO, "update" );
 

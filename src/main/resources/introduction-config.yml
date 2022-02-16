@@ -20,7 +20,7 @@ logging:
                     archivedLogFilenamePattern: logs/rollingfile.log%d{yyyy-MM-dd-HH}.%i.log.gz
                     archivedFileCount: 30
                     totalSizeCap: 500MB
-                    maxFileSize: 1KB
+                    maxFileSize: 5MB
     appenders:
         -   type: console
             threshold: ALL
