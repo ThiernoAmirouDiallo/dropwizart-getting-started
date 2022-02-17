@@ -14,6 +14,7 @@ import com.thierno.dropwizard.domain.entity.inhetancemapping.Cat;
 import com.thierno.dropwizard.domain.entity.inhetancemapping.Dog;
 import com.thierno.dropwizard.service.JpaService;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -42,8 +43,8 @@ public class JpaServiceImpl implements JpaService {
 	public static boolean USE_JPA = false;
 
 	@Override
-	public Message testJpa() {
-		return l2Caching();
+	public Guide testJpa() {
+		return l2CachingCollectionAssociations();
 	}
 
 	private Person testOrderBy() {
@@ -133,6 +134,42 @@ public class JpaServiceImpl implements JpaService {
 		return message1;
 	}
 
+	private Guide l2CachingCollectionAssociations() {
+		//adding some guides and students
+		List<Long> guideIds = ensureStudentAndGuidesExist( 4 );
+
+		//evicting all data in the L2 Cache
+		HibernateEntityManagerFactoryUtil.getJpaEntityManager().getEntityManagerFactory().getCache().evictAll();
+
+		EntityManager entityManager1 = HibernateEntityManagerFactoryUtil.getJpaEntityManager();
+		entityManager1.getTransaction().begin();
+
+		Statistics statistics = entityManager1.getEntityManagerFactory().unwrap( SessionFactory.class ).getStatistics();
+		statistics.setStatisticsEnabled( true );
+
+		Long fistGuideId = guideIds.get( 0 );
+
+		Guide guide1 = entityManager1.find( Guide.class, fistGuideId );
+		logger.info( "Guide#{}.students.count = {}", fistGuideId, guide1.getStudents().size() );
+
+		entityManager1.getTransaction().commit();
+		entityManager1.close();
+
+		EntityManager entityManager2 = HibernateEntityManagerFactoryUtil.getJpaEntityManager();
+		entityManager2.getTransaction().begin();
+
+		Guide guide2 = entityManager2.find( Guide.class, fistGuideId );
+		logger.info( "Guide#{}.students.count = {}", fistGuideId, guide2.getStudents().size() );
+
+		entityManager2.getTransaction().commit();
+		entityManager2.close();
+
+		String guideStudentsCacheRegionName = "com.thierno.dropwizard.domain.entity.Guide.students";
+		logger.info( "L2 cache statistics: {} --> {}", guideStudentsCacheRegionName, statistics.getCacheRegionStatistics( guideStudentsCacheRegionName ) );
+
+		return guide1;
+	}
+
 	private List<String> jpaCriteriaApiTestSelectOneField() {
 		new HibernateServiceImpl().manyToOneAndEmbededIdTest();
 
@@ -216,11 +253,13 @@ public class JpaServiceImpl implements JpaService {
 		return students;
 	}
 
-	void ensureStudentAndGuidesExist( int n ) {
+	List<Long> ensureStudentAndGuidesExist( int n ) {
 		EntityManager entityManager = HibernateEntityManagerFactoryUtil.getJpaEntityManager();
 		entityManager.getTransaction().begin();
 		entityManager.createQuery( "delete from Student s" ).executeUpdate();
 		entityManager.createQuery( "delete from Guide g" ).executeUpdate();
+
+		List<Long> guideIds = new ArrayList<>();
 
 		for ( int i = 0; i < n; i++ ) {
 			Guide guide = Guide.builder().name( //
@@ -236,10 +275,14 @@ public class JpaServiceImpl implements JpaService {
 					.build();
 
 			entityManager.persist( student );
+
+			guideIds.add( student.getGuide().getId() );
 		}
 
 		entityManager.getTransaction().commit();
 		entityManager.close();
+
+		return guideIds;
 	}
 
 	private List<Animal> jpaInheritenceMappingTest() {

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -18,6 +19,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -37,6 +40,8 @@ import lombok.experimental.Tolerate;
 		//@NamedQuery(name = "findGuideByLastName", query = "select guide from Guide as guide where guide.id.lastName = :lastName")
 })
 @BatchSize(size = 3) // to improve N + 1 SELECTS problem when fecth Student.guide lazily
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Guide {
 
 	@Id
@@ -51,6 +56,7 @@ public class Guide {
 	@OneToMany(mappedBy = "guide")
 	@Builder.Default
 	@JsonIgnore
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	private Set<Student> students = new HashSet<>();
 
 	@Tolerate
