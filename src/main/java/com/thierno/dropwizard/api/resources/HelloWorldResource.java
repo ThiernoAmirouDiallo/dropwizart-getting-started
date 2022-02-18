@@ -64,7 +64,7 @@ public class HelloWorldResource {
 	@GET()
 	@Timed
 	@Path("testJpa")
-	public Guide testJpa() throws JsonProcessingException {
+	public Message testJpa() throws JsonProcessingException {
 		return jpaService.testJpa();
 	}
 }

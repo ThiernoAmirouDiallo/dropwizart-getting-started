@@ -43,8 +43,8 @@ public class JpaServiceImpl implements JpaService {
 	public static boolean USE_JPA = false;
 
 	@Override
-	public Guide testJpa() {
-		return l2CachingCollectionAssociations();
+	public Message testJpa() {
+		return l2CachingQueries();
 	}
 
 	private Person testOrderBy() {
@@ -130,6 +130,51 @@ public class JpaServiceImpl implements JpaService {
 		entityManager2.close();
 
 		logger.info( "L2 cache statistics: {}", statistics.getCacheRegionStatistics( "com.thierno.dropwizard.domain.entity.Message" ) );
+
+		return message1;
+	}
+
+	private Message l2CachingQueries() {
+		Long firstMessageId = null;
+		Long lastMessageId = null;
+		for ( int i = 0; i < 100; i++ ) {
+			long id = new HibernateServiceImpl().saveMessageSession( String.format( "message id %s", UUID.randomUUID() ) );
+			if ( firstMessageId == null ) {
+				firstMessageId = id;
+			}
+
+			lastMessageId = id;
+		}
+
+		//evicting all data in the L2 Cache
+		HibernateEntityManagerFactoryUtil.getJpaEntityManager().getEntityManagerFactory().getCache().evictAll();
+
+		EntityManager entityManager1 = HibernateEntityManagerFactoryUtil.getJpaEntityManager();
+		entityManager1.getTransaction().begin();
+
+		Statistics statistics = entityManager1.getEntityManagerFactory().unwrap( SessionFactory.class ).getStatistics();
+		statistics.setStatisticsEnabled( true );
+
+		Message message1 = entityManager1.createQuery( "select m from Message m where id = :id", Message.class ) //
+				.setHint( "org.hibernate.cacheable", true ) // to mark the query as cacheable
+				.setParameter( "id", firstMessageId ) //
+				.getSingleResult();
+
+		entityManager1.getTransaction().commit();
+		entityManager1.close();
+
+		EntityManager entityManager2 = HibernateEntityManagerFactoryUtil.getJpaEntityManager();
+		entityManager2.getTransaction().begin();
+
+		Message message2 = entityManager2.createQuery( "select m from Message m where id = :id", Message.class ) //
+				.setHint( "org.hibernate.cacheable", true ) // to mark the query as cacheable
+				.setParameter( "id", firstMessageId ) //
+				.getSingleResult();
+
+		entityManager2.getTransaction().commit();
+		entityManager2.close();
+
+		logger.info( "L2 cache statistics: {}", statistics.getCacheRegionStatistics( "default-query-results-region" ) );
 
 		return message1;
 	}

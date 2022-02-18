@@ -1,9 +1,9 @@
 package com.thierno.dropwizard.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.thierno.dropwizard.domain.entity.Guide;
+import com.thierno.dropwizard.domain.entity.Message;
 
 public interface JpaService {
 
-	Guide testJpa() throws JsonProcessingException;
+	Message testJpa() throws JsonProcessingException;
 }
