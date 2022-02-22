@@ -3,14 +3,15 @@ package com.thierno.dropwizard.api.resources;
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.thierno.dropwizard.db.util.HibernateSessionFactoryUtil;
-import com.thierno.dropwizard.domain.entity.Guide;
 import com.thierno.dropwizard.domain.entity.Message;
+import com.thierno.dropwizard.domain.entity.Person;
 import com.thierno.dropwizard.model.Saying;
 import com.thierno.dropwizard.service.HibernateService;
 import com.thierno.dropwizard.service.JpaService;
 import com.thierno.dropwizard.service.impl.HibernateServiceImpl;
 import com.thierno.dropwizard.service.impl.JpaServiceImpl;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -57,7 +58,7 @@ public class HelloWorldResource {
 	@GET()
 	@Timed
 	@Path("testHibernate")
-	public Message testHibernate() throws JsonProcessingException {
+	public List<Person> testHibernate() throws JsonProcessingException {
 		return hibernateService.testHibernate();
 	}
 

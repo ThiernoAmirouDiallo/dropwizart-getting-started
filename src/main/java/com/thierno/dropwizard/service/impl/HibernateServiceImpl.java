@@ -51,8 +51,8 @@ public class HibernateServiceImpl implements HibernateService {
 	}
 
 	@Override
-	public Message testHibernate() {
-		return l2Caching();
+	public List<Person> testHibernate() {
+		return manyToManyTest();
 	}
 
 	private Message l2Caching() {
@@ -223,6 +223,8 @@ public class HibernateServiceImpl implements HibernateService {
 		person1.getMovies().add( movie1 );
 		person1.getMovies().add( movie2 );
 		person1.getNicknames().add( "Server Engineer" );
+		person1.getNicknames2().add( "Server Engineer" );
+		person1.getNicknamesMap().put( "Server Engineer", "Backend engineer" );
 		session.persist( person1 );
 
 		Person person2 = Person.builder().firstName( "Amirou" ) //
@@ -233,12 +235,22 @@ public class HibernateServiceImpl implements HibernateService {
 				.build();
 		person2.getPassport().setPerson( person2 );
 		person2.getMovies().add( movie1 );
-		person2.getNicknames().add( "Programmer" );
 		person2.getNicknames().add( "SWE" );
+		person2.getNicknames().add( "Programmer" );
+		person2.getNicknames2().add( "SWE" );
+		person2.getNicknames2().add( "Programmer" );
+		person2.getNicknamesMap().put( "SWE", "Software engineer" );
+		person2.getNicknamesMap().put( "Programmer", "Computer programmer" );
 		session.persist( person2 );
 
 		session.getTransaction().commit();
 		session.close();
+
+		Session session2 = HibernateSessionFactoryUtil.getSessionFactory().openSession();
+		session2.beginTransaction();
+		Person retriedPerson1 = session2.find( Person.class, person2.getId() );
+		session2.getTransaction().commit();
+		session2.close();
 
 		return Arrays.asList(person1, person2);
 	}

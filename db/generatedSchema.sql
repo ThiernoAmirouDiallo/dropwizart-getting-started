@@ -101,6 +101,20 @@ create sequence student_id_seq start 1 increment 1;
         nickname varchar(255)
     );
 
+    create table person_nickname2 (
+       person_id int8 not null,
+        nickname varchar(255),
+        nicknames_order int4 not null,
+        primary key (person_id, nicknames_order)
+    );
+
+    create table person_nickname3 (
+       Person_passport_id int8 not null,
+        nickname_description varchar(255),
+        nickname_key varchar(255) not null,
+        primary key (Person_passport_id, nickname_key)
+    );
+
     create table Student (
        id int8 not null,
         name varchar(255),
@@ -113,6 +127,9 @@ create sequence student_id_seq start 1 increment 1;
 
     alter table person_nickname 
        add constraint UKpvrermt7njldk4r3s2agf0e7q unique (person_id, nickname);
+
+    alter table person_nickname2 
+       add constraint UKoj5pgow5t70gxul1hhu4t37rb unique (person_id, nickname);
 
     alter table Child 
        add constraint FK30gejy1uwly6b5xu73ul5i5jt 
@@ -147,6 +164,16 @@ create sequence student_id_seq start 1 increment 1;
     alter table person_nickname 
        add constraint FKgplq5ckb8rjdw4i4kqtpj8wdu 
        foreign key (person_id) 
+       references Person;
+
+    alter table person_nickname2 
+       add constraint FKrki3u7d1pa6p4uch3kef1e620 
+       foreign key (person_id) 
+       references Person;
+
+    alter table person_nickname3 
+       add constraint FKmcwgys2imx404ga0m6419nema 
+       foreign key (Person_passport_id) 
        references Person;
 
     alter table Student 
