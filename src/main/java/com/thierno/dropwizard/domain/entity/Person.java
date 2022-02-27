@@ -11,6 +11,8 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import javax.persistence.AssociationOverride;
+import javax.persistence.AssociationOverrides;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
@@ -49,6 +51,12 @@ import lombok.experimental.Tolerate;
 @EqualsAndHashCode
 @Builder
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = Person.class)
+//@AssociationOverrides({
+//		@AssociationOverride(name = "homeAddress.guide", joinColumns = @JoinColumn(name = "home_guide_id")), //
+//		@AssociationOverride(name = "billingAddress.guide", joinColumns = @JoinColumn(name = "billing_guide_id")), //
+//		@AssociationOverride(name = "homeAddress.creator", joinColumns = @JoinColumn(name = "home_creator_id")), //
+//		@AssociationOverride(name = "billingAddress.creator", joinColumns = @JoinColumn(name = "billing_creator_id")) //
+//})
 public class Person {
 
 	@Id
@@ -65,6 +73,10 @@ public class Person {
 			@AttributeOverride(name = "street", column = @Column(name = "home_street")),
 			@AttributeOverride(name = "city", column = @Column(name = "home_city")),
 			@AttributeOverride(name = "postalCode", column = @Column(name = "home_postalCode")) })
+	@AssociationOverrides({
+			@AssociationOverride(name = "guide", joinColumns = @JoinColumn(name = "home_guide_id")), //
+			@AssociationOverride(name = "creator", joinColumns = @JoinColumn(name = "home_creator_id")) //
+	})
 	private Address homeAddress;
 
 	@Embedded
@@ -72,6 +84,10 @@ public class Person {
 			@AttributeOverride(name = "street", column = @Column(name = "billing_street")),
 			@AttributeOverride(name = "city", column = @Column(name = "billing_city")),
 			@AttributeOverride(name = "postalCode", column = @Column(name = "billing_postalCode")) })
+	@AssociationOverrides({
+			@AssociationOverride(name = "guide", joinColumns = @JoinColumn(name = "billing_guide_id")), //
+			@AssociationOverride(name = "creator", joinColumns = @JoinColumn(name = "billing_creator_id")) //
+	})
 	private Address billingAddress;
 
 	@ManyToOne(cascade = CascadeType.MERGE)

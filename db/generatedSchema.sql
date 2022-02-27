@@ -92,7 +92,11 @@ create sequence student_id_seq start 1 increment 1;
         home_street varchar(255),
         lastName varchar(255),
         sexe varchar(255) not null,
+        billing_creator_id int8,
+        billing_guide_id int8,
         country_id int8,
+        home_creator_id int8,
+        home_guide_id int8,
         primary key (passport_id)
     );
 
@@ -152,9 +156,29 @@ create sequence student_id_seq start 1 increment 1;
        references Person;
 
     alter table Person 
+       add constraint FKh42bvscjribrx4bpvflkv3bq7 
+       foreign key (billing_creator_id) 
+       references Person;
+
+    alter table Person 
+       add constraint FKs0m7q4seu9818yxymnyf0lgkb 
+       foreign key (billing_guide_id) 
+       references Guide;
+
+    alter table Person 
        add constraint FKat8ftpi85snasl6eciil1nqas 
        foreign key (country_id) 
        references Country;
+
+    alter table Person 
+       add constraint FKsadipn31j4ahwtfi7cy0fed0h 
+       foreign key (home_creator_id) 
+       references Person;
+
+    alter table Person 
+       add constraint FKoek0ejhwxtpsf897o1g405kiw 
+       foreign key (home_guide_id) 
+       references Guide;
 
     alter table Person 
        add constraint FKbkmid3b13tkn6vbxfebweqlp3 
