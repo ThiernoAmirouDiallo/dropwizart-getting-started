@@ -6,9 +6,32 @@ services:
         container_name: postgres
         ports:
             - 5432:5432
+        networks:
+            -   prometheus-network
         volumes:
             - ./data/db:/var/lib/postgresql/data
         env_file:
             - database.env
         environment:
             - POSTGRES_DB=dropwizard
+
+    prometheus:
+        image: prom/prometheus
+        container_name: prometheus
+        ports:
+            - 9090:9090
+        networks:
+            - prometheus-network
+        volumes:
+            - ./conf/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+    prometheus-node-exporter:
+            image: prom/node-exporter
+            container_name: prometheus-node-exporter
+            ports:
+                - 9100:9100
+            networks:
+                - prometheus-network
+
+networks:
+    prometheus-network:
