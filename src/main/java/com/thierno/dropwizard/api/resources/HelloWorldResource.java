@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import io.prometheus.client.Counter;
 import io.prometheus.client.Gauge;
+import io.prometheus.client.Histogram;
 import io.prometheus.client.Summary;
 
 @Path("/hello-world")
@@ -59,15 +60,21 @@ public class HelloWorldResource {
 			.register();
 
 	//SUMMARY
-	static final Summary requestLatency = Summary.build() //
-			.name( "requests_latency_seconds" ) //
+	static final Summary requestLatencySummary = Summary.build() //
+			.name( "requests_latency_seconds_summary" ) //
 			.labelNames( "endpoint" ) //
 			.help( "request latency in seconds" ) //
-			.quantile(0.5, 0.01)    // 0.5 quantile (median) with 0.01 allowed error
-			.quantile(0.95, 0.005)  // 0.95 quantile with 0.005 allowed error
+			.quantile( 0.5, 0.01 )    // 0.5 quantile (median) with 0.01 allowed error
+			.quantile( 0.95, 0.005 )  // 0.95 quantile with 0.005 allowed error
 			.register();
 
 	// HISTOGRAM
+	static final Histogram requestLatencyHistogram = Histogram.build() //
+			.name( "requests_latency_seconds_histogram" ) //
+			.labelNames( "endpoint", "jobName" ) //
+			//.buckets() // to set our own wanted buckets
+			.help( "Request latency in seconds." ) //
+			.register();
 
 	// todo inject this in the future
 	HibernateService hibernateService = new HibernateServiceImpl();
@@ -112,29 +119,44 @@ public class HelloWorldResource {
 	@GET()
 	@Path("testPrometheusCounter")
 	public Message testPrometheusCounter() throws JsonProcessingException {
-		requests.labels( "testPrometheusCounter" ).inc();
+		requests.labels( "testPrometheus" ).inc();
 		return jpaService.testJpa();
 	}
 
 	@GET()
 	@Path("testPrometheusGauge")
 	public Message testPrometheusGauge() throws JsonProcessingException {
-		inprogressRequests.labels( "testPrometheusCounter" ).inc();
-		inprogressRequestsTimer.labels( "testPrometheusCounter" );
-		Gauge.Timer timer = inprogressRequestsTimer.labels( "testPrometheusCounter" ).startTimer();
+		inprogressRequests.labels( "testPrometheus" ).inc();
+		inprogressRequestsTimer.labels( "testPrometheus" );
+		Gauge.Timer timer = inprogressRequestsTimer.labels( "testPrometheus" ).startTimer();
 
 		// artrary processing
 		arbitraryProcessing();
 
 		timer.setDuration();
-		inprogressRequests.labels( "testPrometheusCounter" ).dec();
+		inprogressRequests.labels( "testPrometheus" ).dec();
 		return jpaService.testJpa();
 	}
 
 	@GET()
 	@Path("testPrometheusSummary")
 	public Message testPrometheusSummary() throws JsonProcessingException {
-		Summary.Timer requestTimer = requestLatency.labels("testPrometheusCounter").startTimer();
+		Summary.Timer requestTimer = requestLatencySummary.labels( "testPrometheus" ).startTimer();
+
+		try {
+			// artrary processing
+			arbitraryProcessing();
+
+			return jpaService.testJpa();
+		} finally {
+			requestTimer.observeDuration();
+		}
+	}
+
+	@GET()
+	@Path("testPrometheusHistogram")
+	public Message testPrometheusHistogram( @QueryParam("jobName") String jobName ) throws JsonProcessingException {
+		Histogram.Timer requestTimer = requestLatencyHistogram.labels( "testPrometheus", jobName ).startTimer();
 
 		try {
 			// artrary processing
