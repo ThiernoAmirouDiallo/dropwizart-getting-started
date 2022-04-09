@@ -1,6 +1,22 @@
 version: "3.8"
 
 services:
+    webapp:
+        image: thiernoamiroud/dropwizarh-hibernate-prometheus
+        container_name: java-webapp
+        ports:
+            - 8080:8080
+            - 8081:8081
+            - 8090:8090
+        networks:
+            - prometheus-network
+        env_file:
+            - database.env
+        environment:
+            - POSTGRES_DB=dropwizard
+            - POSTGRES_HOST=postgres
+            - EHCACHE_CONFIG=ehcache.xml
+
     db:
         image: postgres
         container_name: postgres

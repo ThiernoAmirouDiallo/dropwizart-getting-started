@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import io.prometheus.client.exporter.HTTPServer;
 
 public class HelloWorldApplication extends Application<HelloWorldConfiguration> {
 
@@ -37,7 +38,7 @@ public class HelloWorldApplication extends Application<HelloWorldConfiguration> 
 	}
 
 	@Override
-	public void run( HelloWorldConfiguration configuration, Environment environment ) {
+	public void run( HelloWorldConfiguration configuration, Environment environment ) throws Exception {
 		final HelloWorldResource resource = new HelloWorldResource( configuration.getTemplate(), configuration.getDefaultName() );
 		final TemplateHealthCheck healthCheck = new TemplateHealthCheck( configuration.getTemplate() );
 		environment.jersey().register( resource );
@@ -51,6 +52,10 @@ public class HelloWorldApplication extends Application<HelloWorldConfiguration> 
 
 		// adding countries
 		ensureCountriesExist();
+
+		// exposing prometheus metrics
+		logger.info( "exposing prometheus metrics to {}", "http://localhost:8090/metrics" );
+		HTTPServer server = new HTTPServer.Builder().withPort( 8090 ).build();
 	}
 
 	private void ensureCountriesExist() {

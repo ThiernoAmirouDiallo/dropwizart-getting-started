@@ -22,9 +22,12 @@ import lombok.Data;
 @Data
 public class JpaEntityManagerFactory {
 
-	private String DB_URL = "jdbc:postgresql://localhost:5432/dropwizard?currentSchema=bookstore";
-	private String DB_USER_NAME = System.getenv( "POSTGRES_USER" );
-	private String DB_PASSWORD = System.getenv( "POSTGRES_PASSWORD" );
+	private static final String DB_USER_NAME = System.getenv( "POSTGRES_USER" );
+	private static final String DB_PASSWORD = System.getenv( "POSTGRES_PASSWORD" );
+	static final String POSTGRES_HOST = System.getenv( "POSTGRES_HOST" );
+	static final String EHCACHE_CONFIG = System.getenv( "EHCACHE_CONFIG" );
+	static final String DB_URL = String.format( "jdbc:postgresql://%s:5432/dropwizard?currentSchema=bookstore", POSTGRES_HOST);
+
 	private Class[] entityClasses;
 	private Map<String, String> namedQueriesMap;
 
@@ -74,7 +77,7 @@ public class JpaEntityManagerFactory {
 		properties.put( Environment.CACHE_REGION_FACTORY, "org.hibernate.cache.jcache.JCacheRegionFactory" ); // or properties.put( Environment.CACHE_REGION_FACTORY, "jcache" );
 		properties.put( "hibernate.javax.cache.provider", "org.ehcache.jsr107.EhcacheCachingProvider" );
 		properties.put( "hibernate.javax.cache.missing_cache_strategy", "create" );
-		properties.put( "hibernate.javax.cache.uri", "file:src/main/resources/ehcache.xml" );
+		properties.put( "hibernate.javax.cache.uri", String.format( "file:%s", EHCACHE_CONFIG) );
 		properties.put( Environment.USE_QUERY_CACHE, "true" );
 
 		properties.put( Environment.HBM2DDL_AUTO, "update" );

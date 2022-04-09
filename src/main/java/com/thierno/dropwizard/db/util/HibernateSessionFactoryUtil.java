@@ -1,5 +1,8 @@
 package com.thierno.dropwizard.db.util;
 
+import static com.thierno.dropwizard.db.util.JpaEntityManagerFactory.DB_URL;
+import static com.thierno.dropwizard.db.util.JpaEntityManagerFactory.EHCACHE_CONFIG;
+
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -31,7 +34,7 @@ public class HibernateSessionFactoryUtil {
 				Map<String, String> settings = new HashMap<>();
 				settings.put( Environment.DRIVER, "org.postgresql.Driver" );
 				settings.put( Environment.DIALECT, "org.hibernate.dialect.PostgreSQLDialect" );
-				settings.put( Environment.URL, "jdbc:postgresql://localhost:5432/dropwizard?currentSchema=bookstore" );
+				settings.put( Environment.URL, DB_URL );
 				settings.put( Environment.USER, System.getenv( "POSTGRES_USER" ) );
 				settings.put( Environment.PASS, System.getenv( "POSTGRES_PASSWORD" ) );
 				settings.put( Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread" );
@@ -45,7 +48,7 @@ public class HibernateSessionFactoryUtil {
 				settings.put( Environment.JPA_SHARED_CACHE_MODE, "ENABLE_SELECTIVE" ); // enable for certain entities selectively not for all by default
 				settings.put( Environment.CACHE_REGION_FACTORY, "org.hibernate.cache.jcache.JCacheRegionFactory" ); // or settings.put( Environment.CACHE_REGION_FACTORY, "jcache" );
 				settings.put( "hibernate.javax.cache.provider", "org.ehcache.jsr107.EhcacheCachingProvider" );
-				settings.put( "hibernate.javax.cache.uri", "file:src/main/resources/ehcache.xml" );
+				settings.put( "hibernate.javax.cache.uri", String.format( "file:%s", EHCACHE_CONFIG ) );
 				settings.put( Environment.USE_QUERY_CACHE, "true" );
 
 				settings.put( Environment.HBM2DDL_AUTO, "update" );

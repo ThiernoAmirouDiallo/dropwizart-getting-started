@@ -21,13 +21,53 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.commons.lang3.RandomUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.prometheus.client.Counter;
+import io.prometheus.client.Gauge;
+import io.prometheus.client.Summary;
+
 @Path("/hello-world")
 @Produces(MediaType.APPLICATION_JSON)
 public class HelloWorldResource {
 
+	Logger logger = LoggerFactory.getLogger( HelloWorldResource.class );
+
 	private final String template;
 	private final String defaultName;
 	private final AtomicLong counter;
+
+	//COUNTER
+	static final Counter requests = Counter.build() //
+			.name( "java_app_requests_total" ) //
+			.labelNames( "endpoint" ) //
+			.help( "Total requests." ) //
+			.register();
+
+	//GAUGES
+	static final Gauge inprogressRequests = Gauge.build() //
+			.name( "inprogress_requests" ) //
+			.labelNames( "endpoint" ) //
+			.help( "Inprogress requests." ) //
+			.register();
+	static final Gauge inprogressRequestsTimer = Gauge.build() //
+			.name( "inprogress_requests_timer" ) //
+			.labelNames( "endpoint" ) //
+			.help( "Inprogress requests timer." ) //
+			.register();
+
+	//SUMMARY
+	static final Summary requestLatency = Summary.build() //
+			.name( "requests_latency_seconds" ) //
+			.labelNames( "endpoint" ) //
+			.help( "request latency in seconds" ) //
+			.quantile(0.5, 0.01)    // 0.5 quantile (median) with 0.01 allowed error
+			.quantile(0.95, 0.005)  // 0.95 quantile with 0.005 allowed error
+			.register();
+
+	// HISTOGRAM
 
 	// todo inject this in the future
 	HibernateService hibernateService = new HibernateServiceImpl();
@@ -67,6 +107,54 @@ public class HelloWorldResource {
 	@Path("testJpa")
 	public Message testJpa() throws JsonProcessingException {
 		return jpaService.testJpa();
+	}
+
+	@GET()
+	@Path("testPrometheusCounter")
+	public Message testPrometheusCounter() throws JsonProcessingException {
+		requests.labels( "testPrometheusCounter" ).inc();
+		return jpaService.testJpa();
+	}
+
+	@GET()
+	@Path("testPrometheusGauge")
+	public Message testPrometheusGauge() throws JsonProcessingException {
+		inprogressRequests.labels( "testPrometheusCounter" ).inc();
+		inprogressRequestsTimer.labels( "testPrometheusCounter" );
+		Gauge.Timer timer = inprogressRequestsTimer.labels( "testPrometheusCounter" ).startTimer();
+
+		// artrary processing
+		arbitraryProcessing();
+
+		timer.setDuration();
+		inprogressRequests.labels( "testPrometheusCounter" ).dec();
+		return jpaService.testJpa();
+	}
+
+	@GET()
+	@Path("testPrometheusSummary")
+	public Message testPrometheusSummary() throws JsonProcessingException {
+		Summary.Timer requestTimer = requestLatency.labels("testPrometheusCounter").startTimer();
+
+		try {
+			// artrary processing
+			arbitraryProcessing();
+
+			return jpaService.testJpa();
+		} finally {
+			requestTimer.observeDuration();
+		}
+	}
+
+	private void arbitraryProcessing() {
+		try {
+			// to sleep between 0 - 5 seconds
+			long waitingMillis = RandomUtils.nextLong() % 5_000;
+			logger.info( "Waiting for {} millis", waitingMillis );
+			Thread.sleep( waitingMillis );
+		} catch ( InterruptedException e ) {
+			e.printStackTrace();
+		}
 	}
 }
 

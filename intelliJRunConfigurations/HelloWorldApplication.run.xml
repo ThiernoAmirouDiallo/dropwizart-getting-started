@@ -1,0 +1,22 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="HelloWorldApplication" type="Application" factoryName="Application" nameIsGenerated="true">
+    <envs>
+      <env name="POSTGRES_USER" value="postgres" />
+      <env name="POSTGRES_PASSWORD" value="postgres" />
+      <env name="POSTGRES_HOST" value="localhost" />
+      <env name="EHCACHE_CONFIG" value="src/main/resources/ehcache.xml" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="com.thierno.dropwizard.HelloWorldApplication" />
+    <module name="dropwizart-getting-started" />
+    <option name="PROGRAM_PARAMETERS" value="server src/main/resources/introduction-config.yml" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="com.thierno.dropwizard.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
