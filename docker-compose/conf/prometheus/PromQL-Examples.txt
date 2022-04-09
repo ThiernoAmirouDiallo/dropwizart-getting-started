@@ -1,0 +1,27 @@
+topk(3, sum(node_cpu_seconds_total{}) by (mode))
+promhttp_metric_handler_requests_total and ignoring(handler) prometheus_http_requests_total
+promhttp_metric_handler_requests_total or on (code) prometheus_http_requests_total
+quantile(0.9, node_cpu_seconds_total{}) by (mode)
+quantile(0.999, rate(node_cpu_seconds_total[60m])) by (mode)
+rate(prometheus_http_requests_total{handler=~'/api/.*'}[1m])
+irate(prometheus_http_requests_total{handler=~'/api/.*'}[1m])
+sum(rate(node_cpu_seconds_total{instance="prometheus-node-exporter:9100"}[5m]))
+sum(rate(node_cpu_seconds_total{instance="prometheus-node-exporter:9100", mode!="idle"}[5m])) without (cpu)
+sum(rate(node_cpu_seconds_total{instance="prometheus-node-exporter:9100", mode!="idle"}[5m])) by (mode)
+changes(process_start_time_seconds{job='prometheus-node-exporter'}[1h])
+deriv(process_resident_memory_bytes{job="prometheus"}[1h])
+predict_linear(node_memory_MemFree_bytes{job="prometheus-node-exporter"}[1h], 2*60*60) / 1024 / 1024
+max_over_time(node_cpu_seconds_total[1h])
+sort(node_cpu_seconds_total)
+node_memory_MemFree_bytes / node_memory_MemTotal_bytes * 100
+sum(rate(node_disk_read_bytes_total{job="prometheus-node-exporter"}[5m])/1024/1024)
+sum(predict_linear(node_disk_written_bytes_total{job="prometheus-node-exporter"}[2h], 6*60*60) / 1024 / 1024)
+sum(irate(node_cpu_seconds_total{mode!="idle"}[1m])) / sum(irate(node_cpu_seconds_total{}[1m])) * 100
+{__name__="node_cpu_seconds_total"}
+sum_over_time(sum by (mode) (node_cpu_seconds_total{instance="prometheus-node-exporter:9100", mode!="idle"})[1h:5m])
+sum_over_time(sum by (mode) (node_cpu_seconds_total{instance="prometheus-node-exporter:9100", mode!="idle"})[5m:])
+sum(sum_over_time(node_cpu_seconds_total{instance="prometheus-node-exporter:9100", mode!="idle"}[5m])) by (mode)
+increase(java_app_requests_total[1m])
+sum_over_time(increase(java_app_requests_total[1m])[5m:1m])
+sum_over_time(sum(increase(java_app_requests_total[1m]))[5m:1m])
+sum_over_time(sum(java_app_requests_total)[5m:])
