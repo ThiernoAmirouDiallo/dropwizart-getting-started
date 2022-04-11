@@ -1,3 +1,12 @@
+#   Reloading live the configs :
+#   A configuration reload is triggered by sending a SIGHUP to the Prometheus process or sending a HTTP POST request
+#   to the /-/reload endpoint (when the --web.enable-lifecycle flag is enabled when running the prometheus server
+#
+#    ps -ef |grep prometheus
+#    kill -HUP prometheus-process-id
+#    curl -X POST http://localhost:9090/-/reload
+
+
 # my global config
 global:
     scrape_interval: 15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
@@ -35,3 +44,9 @@ scrape_configs:
         # scheme defaults to 'http'.
       static_configs:
           - targets: ["java-webapp:8090"]
+
+    - job_name: "fake-java-webapp"
+        # metrics_path defaults to '/metrics'
+        # scheme defaults to 'http'.
+      static_configs:
+          - targets: ["fake-java-webapp:8090"]

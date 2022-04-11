@@ -40,14 +40,24 @@ services:
             - prometheus-network
         volumes:
             - ./conf/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+        command: [ "--web.enable-lifecycle",
+                   "--config.file=/etc/prometheus/prometheus.yml",
+                   "--storage.tsdb.path=/prometheus",
+                   "--web.console.libraries=/usr/share/prometheus/console_libraries",
+                   "--web.console.templates=/usr/share/prometheus/consoles" ]
+    #        docker run -p 9090:9090 -it --name prometheus --rm --network docker-compose_prometheus-network -v `pwd`/docker-compose/conf/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus \
+    #        --web.enable-lifecycle \
+    #        --config.file=/etc/prometheus/prometheus.yml \
+    #        --storage.tsdb.path=/prometheus \
+    #        --web.console.libraries=/usr/share/prometheus/console_libraries --web.console.templates=/usr/share/prometheus/consoles
 
     prometheus-node-exporter:
-            image: prom/node-exporter
-            container_name: prometheus-node-exporter
-            ports:
-                - 9100:9100
-            networks:
-                - prometheus-network
+        image: prom/node-exporter
+        container_name: prometheus-node-exporter
+        ports:
+            - 9100:9100
+        networks:
+            - prometheus-network
 
 networks:
     prometheus-network:
