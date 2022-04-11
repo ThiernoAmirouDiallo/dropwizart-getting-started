@@ -45,8 +45,3 @@ scrape_configs:
       static_configs:
           - targets: ["java-webapp:8090"]
 
-    - job_name: "fake-java-webapp"
-        # metrics_path defaults to '/metrics'
-        # scheme defaults to 'http'.
-      static_configs:
-          - targets: ["fake-java-webapp:8090"]
