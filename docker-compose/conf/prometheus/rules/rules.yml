@@ -1,0 +1,25 @@
+groups:
+    -   name: node_cpu_seconds-rules
+        rules:
+            -   record: job:node_cpu_seconds:idle:avg_rate5m
+                expr: avg without(cpu) (rate(node_cpu_seconds_total{mode="idle"}[5m]))
+
+            -   alert: JavaWebAppIsDown
+                expr: up{job="java-webapp"} == 0
+                for: 1m
+
+            -   record: job:webapp_request_latency_seconds:rate1m
+                expr: rate(requests_latency_seconds_summary_sum[1m])/rate(requests_latency_seconds_summary_count[1m])
+
+            -   alert: WebAppLatencyAboveOr5s
+                expr: job:webapp_request_latency_seconds:rate1m >= 5
+                for: 2m
+                labels:
+                    severity: critical
+
+            -   alert: WebAppLatency2to5s
+                expr: 2 < job:webapp_request_latency_seconds:rate1m < 5
+                for: 2m
+                labels:
+                    severity: warning
+

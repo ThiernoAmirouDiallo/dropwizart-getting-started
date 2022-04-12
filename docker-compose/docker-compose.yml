@@ -40,6 +40,7 @@ services:
             - prometheus-network
         volumes:
             - ./conf/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+            - ./conf/prometheus/rules/:/etc/prometheus/rules/
         command: [ "--web.enable-lifecycle",
                    "--config.file=/etc/prometheus/prometheus.yml",
                    "--storage.tsdb.path=/prometheus",
