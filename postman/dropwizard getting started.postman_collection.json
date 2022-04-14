@@ -266,6 +266,118 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "testPrometheusCounter",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/hello-world/testPrometheusCounter",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"hello-world",
+						"testPrometheusCounter"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "diallo",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "testPrometheusGauge",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/hello-world/testPrometheusGauge",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"hello-world",
+						"testPrometheusGauge"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "diallo",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "testPrometheusSummary",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/hello-world/testPrometheusSummary",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"hello-world",
+						"testPrometheusSummary"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "diallo",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "testPrometheusHistogram",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/hello-world/testPrometheusHistogram?jobName=job2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"hello-world",
+						"testPrometheusHistogram"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "diallo",
+							"disabled": true
+						},
+						{
+							"key": "jobName",
+							"value": "job2"
+						}
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

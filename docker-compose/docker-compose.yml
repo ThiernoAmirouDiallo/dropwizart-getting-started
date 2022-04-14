@@ -60,5 +60,15 @@ services:
         networks:
             - prometheus-network
 
+    prometheus-alertmanager:
+        image: prom/alertmanager
+        container_name: prometheus-alertmanager
+        ports:
+            - 9093:9093
+        networks:
+            - prometheus-network
+        volumes:
+            - ./conf/prometheus/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+
 networks:
     prometheus-network:

@@ -11,11 +11,15 @@ groups:
             -   record: job:webapp_request_latency_seconds:rate1m
                 expr: rate(requests_latency_seconds_summary_sum[1m])/rate(requests_latency_seconds_summary_count[1m])
 
-            -   alert: WebAppLatencyAboveOr5s
-                expr: job:webapp_request_latency_seconds:rate1m >= 5
+            -   alert: WebAppLatencyAbove5s
+                expr: job:webapp_request_latency_seconds:rate1m > 5
                 for: 2m
                 labels:
                     severity: critical
+                annotations:
+                    summary: Java web app latency is above 5 seconds
+                    description: App latency of instance {{ $labels.intance }} of the job {{ $labels.job }} was > 5s for more than 2min. Current value {{ $value }}.
+                    app_link: http://localhost:8080/hello-world/testPrometheusSummary
 
             -   alert: WebAppLatency2to5s
                 expr: 2 < job:webapp_request_latency_seconds:rate1m < 5
