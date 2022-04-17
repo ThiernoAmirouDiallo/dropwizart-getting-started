@@ -30,3 +30,5 @@ label_join(prometheus_http_requests_total{instance="localhost:9090", handler=~"/
 histogram_quantile(0.9, rate(requests_latency_seconds_histogram_bucket[10m]))
 histogram_quantile(0.9, sum by (jobName, le) (rate(requests_latency_seconds_histogram_bucket[10m])))
 histogram_quantile(0.9, sum by (le) (rate(requests_latency_seconds_histogram_bucket[10m])))
+(sum by (instance) (node_filesystem_free_bytes) / sum by(instance) (node_filesystem_size_bytes)) * 100
+100 - (avg by (instance) (irate(node_cpu_seconds_total{mode="idle"}[1m])) * 100 )

@@ -45,3 +45,9 @@ scrape_configs:
       static_configs:
           - targets: ["java-webapp:8090"]
 
+    - job_name: "grafana"
+        # metrics_path defaults to '/metrics'
+        # scheme defaults to 'http'.
+      static_configs:
+          - targets: ["grafana:3000"]
+

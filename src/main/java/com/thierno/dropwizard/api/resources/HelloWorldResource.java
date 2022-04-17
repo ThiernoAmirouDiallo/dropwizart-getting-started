@@ -170,8 +170,8 @@ public class HelloWorldResource {
 
 	private void arbitraryProcessing() {
 		try {
-			int minLatency = 5_000;
-			int maxLatency = 7_000;
+			int minLatency = 0_000;
+			int maxLatency = 1_000;
 			// to sleep between min maxLatency - minLatency seconds
 			long waitingMillis = (RandomUtils.nextLong() % (maxLatency - minLatency)) + minLatency;
 			logger.info( "Waiting for {} millis", waitingMillis );

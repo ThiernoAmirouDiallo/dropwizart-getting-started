@@ -70,5 +70,13 @@ services:
         volumes:
             - ./conf/prometheus/alertmanager.yml:/etc/alertmanager/alertmanager.yml
 
+    grafana:
+        image: grafana/grafana-enterprise
+        container_name: grafana
+        ports:
+            - 3000:3000
+        networks:
+            - prometheus-network
+
 networks:
     prometheus-network:
