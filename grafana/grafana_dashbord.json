@@ -35,6 +35,7 @@
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
   "id": 6,
+  "iteration": 1650839573058,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -1016,21 +1017,143 @@
       "type": "timeseries"
     }
   ],
-  "refresh": "5s",
+  "refresh": "",
   "schemaVersion": 36,
   "style": "dark",
   "tags": [],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "grafana",
+          "value": "grafana"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "Upw1e987z"
+        },
+        "definition": "label_values(job)",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Job",
+        "multi": false,
+        "name": "promJob",
+        "options": [],
+        "query": {
+          "query": "label_values(job)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": [
+            "testPrometheus",
+            "testPrometheusGauge",
+            "testPrometheusCounter",
+            "testPrometheusHistogram",
+            "testPrometheusSummary"
+          ],
+          "value": [
+            "testPrometheus",
+            "testPrometheusGauge",
+            "testPrometheusCounter",
+            "testPrometheusHistogram",
+            "testPrometheusSummary"
+          ]
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "Upw1e987z"
+        },
+        "definition": "label_values({__name__=~\".*requests.*\", job=\"java-webapp\"}, endpoint)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Endpoint",
+        "multi": true,
+        "name": "endpoint",
+        "options": [],
+        "query": {
+          "query": "label_values({__name__=~\".*requests.*\", job=\"java-webapp\"}, endpoint)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "isNone": true,
+          "selected": false,
+          "text": "None",
+          "value": ""
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "Upw1e987z"
+        },
+        "definition": "label_values({endpoint=\"$endpoint\"}, job)",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Job",
+        "multi": false,
+        "name": "promJob2",
+        "options": [],
+        "query": {
+          "query": "label_values({endpoint=\"$endpoint\"}, job)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "java-webapp",
+          "value": "java-webapp"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "Upw1e987z"
+        },
+        "definition": "label_values({endpoint=~\"$endpoint\"}, job)",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Job with multi options",
+        "multi": false,
+        "name": "copy_of_promJob2",
+        "options": [],
+        "query": {
+          "query": "label_values({endpoint=~\"$endpoint\"}, job)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
   },
   "time": {
-    "from": "2022-04-22T23:26:49.921Z",
-    "to": "2022-04-22T23:27:32.121Z"
+    "from": "now-6h",
+    "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Prometheus dashboard",
   "uid": "aPpC1CU7z",
-  "version": 5,
+  "version": 16,
   "weekStart": ""
 }
