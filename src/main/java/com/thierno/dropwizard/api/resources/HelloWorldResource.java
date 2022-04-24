@@ -119,15 +119,15 @@ public class HelloWorldResource {
 	@GET()
 	@Path("testPrometheusCounter")
 	public Message testPrometheusCounter() throws JsonProcessingException {
-		requests.labels( "testPrometheus" ).inc();
+		requests.labels( "testPrometheusCounter" ).inc();
 		return jpaService.testJpa();
 	}
 
 	@GET()
 	@Path("testPrometheusGauge")
 	public Message testPrometheusGauge() throws JsonProcessingException {
-		inprogressRequests.labels( "testPrometheus" ).inc();
-		inprogressRequestsTimer.labels( "testPrometheus" );
+		inprogressRequests.labels( "testPrometheusGauge" ).inc();
+		inprogressRequestsTimer.labels( "testPrometheusGauge" );
 		Gauge.Timer timer = inprogressRequestsTimer.labels( "testPrometheus" ).startTimer();
 
 		// artrary processing
@@ -141,7 +141,7 @@ public class HelloWorldResource {
 	@GET()
 	@Path("testPrometheusSummary")
 	public Message testPrometheusSummary() throws JsonProcessingException {
-		Summary.Timer requestTimer = requestLatencySummary.labels( "testPrometheus" ).startTimer();
+		Summary.Timer requestTimer = requestLatencySummary.labels( "testPrometheusSummary" ).startTimer();
 
 		try {
 			// artrary processing
@@ -156,7 +156,7 @@ public class HelloWorldResource {
 	@GET()
 	@Path("testPrometheusHistogram")
 	public Message testPrometheusHistogram( @QueryParam("jobName") String jobName ) throws JsonProcessingException {
-		Histogram.Timer requestTimer = requestLatencyHistogram.labels( "testPrometheus", jobName ).startTimer();
+		Histogram.Timer requestTimer = requestLatencyHistogram.labels( "testPrometheusHistogram", jobName ).startTimer();
 
 		try {
 			// artrary processing
