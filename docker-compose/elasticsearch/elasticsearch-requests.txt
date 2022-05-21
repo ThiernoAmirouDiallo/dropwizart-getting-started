@@ -1,6 +1,99 @@
 curl --insecure -u elastic -X GET -H "Content-Type:application/json" https://localhost:9200/products/_search -d ' { "query": { "match_all": {} } } '
 
 GET  /_cluster/health
+
 GET /_cat/nodes?v
+
 GET /_cat/indices?v&expand_wildcards=all
+
+# list notes
 GET /_nodes
+
+PUT /pages
+GET /_cat/shards?v
+DELETE /pages
+
+PUT /products
+{
+  "settings": {
+    "number_of_shards": 2,
+    "number_of_replicas": 2
+  }
+}
+
+# indexing (adding) a document
+POST /products/_doc
+{
+  "name": "Coffee Maker",
+  "price": 64,
+  "in_stock": 10
+}
+
+# indexing with an id
+PUT /products/_doc/100
+{
+  "name": "Toaster",
+  "price": 49,
+  "in_stock": 5
+}
+
+GET /products/_doc/100
+
+POST /products/_update/100
+{
+  "doc": {
+     "in_stock": 3
+  }
+}
+
+POST /products/_update/100
+{
+  "doc": {
+     "tags": ["electronics"]
+  }
+}
+
+
+# scritpted updated
+POST /products/_update/100
+{
+  "script": {
+    "source": "ctx._source.in_stock--"
+  }
+}
+
+POST /products/_update/100
+{
+  "script": {
+    "source": "ctx._source.in_stock = 10"
+  }
+}
+
+POST /products/_update/100
+{
+  "script": {
+    "source": "ctx._source.in_stock -= params.quantity",
+    "params": {
+      "quantity": 4
+    }
+  }
+}
+
+
+POST /products/_update/100
+{
+  "script": {
+    "source": """
+      if(ctx._source.in_stock < params.quantity) {
+        ctx.op = 'noop';
+      }
+
+      ctx._source.in_stock -= params.quantity
+    """,
+    "params": {
+      "quantity": 20
+    }
+  }
+}
+
+
