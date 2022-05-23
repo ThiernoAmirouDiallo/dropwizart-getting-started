@@ -113,3 +113,13 @@ GET /products/_doc/101
 
 DELETE /products/_doc/101
 
+# optimistic locking
+GET /products/_doc/100
+
+POST /products/_doc/100?if_primary_term=1&if_seq_no=11
+{
+  "doc":{
+    "in_stock":"3"
+  }
+}
+
