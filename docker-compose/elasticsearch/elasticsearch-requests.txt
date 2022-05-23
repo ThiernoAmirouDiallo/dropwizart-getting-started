@@ -149,3 +149,22 @@ POST /products/_delete_by_query
     "match_all": {}
   }
 }
+
+# bulk
+POST /_bulk
+{ "index": { "_index": "products", "_id": 200 } }
+{ "name": "Expresso Machine", "price": 249, "in_stock": 7 }
+{ "create": { "_index": "products", "_id": 201 } }
+{ "name": "Milk Frother", "price": 149, "in_stock": 12 }
+
+# bulk
+POST /_bulk
+{ "update": {"_index": "products", "_id": 201 } }
+{ "doc": {"price": 159, "in_stock": 13 } }
+{ "detele": {"_index": "products", "_id": 200 } }
+
+POST /products/_bulk
+{ "update": { "_id": 201 } }
+{ "doc": { "price": 159, "in_stock": 13 } }
+{ "delete": { "_id": 200 } }
+
