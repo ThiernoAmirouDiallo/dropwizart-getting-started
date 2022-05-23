@@ -42,7 +42,7 @@ GET /products/_doc/100
 POST /products/_update/100
 {
   "doc": {
-     "in_stock": 3
+     "in_stock": 4
   }
 }
 
@@ -111,15 +111,41 @@ POST /products/_update/101
 
 GET /products/_doc/101
 
-DELETE /products/_doc/101
+DELETE /products/_doc/100
 
 # optimistic locking
 GET /products/_doc/100
 
-POST /products/_doc/100?if_primary_term=1&if_seq_no=11
+POST /products/_doc/100?if_primary_term=1&if_seq_no=16
 {
-  "doc":{
-    "in_stock":"3"
+  "in_stock":"3"
+}
+
+# search query
+GET /products/_search
+{
+  "query": {
+    "match_all": {}
   }
 }
 
+# update by query
+POST /products/_update_by_query
+{
+  "conflicts": "proceed",
+  "script": {
+    "source": "ctx._source.in_stock --"
+  },
+  "query": {
+    "match_all": {}
+  }
+}
+
+# delete by search
+POST /products/_delete_by_query
+{
+  "conflicts": "proceed",
+  "query": {
+    "match_all": {}
+  }
+}
