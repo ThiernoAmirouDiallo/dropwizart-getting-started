@@ -168,3 +168,5 @@ POST /products/_bulk
 { "doc": { "price": 159, "in_stock": 13 } }
 { "delete": { "_id": 200 } }
 
+# bulk request with curl
+# curl --insecure -u elastic -X POST -H "Content-Type:application/x-ndjson" "https://localhost:9200/products/_bulk?pretty" --data-binary "@products-bulk.json"
