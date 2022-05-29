@@ -1,0 +1,21 @@
+# analysing text
+POST /_analyze
+{
+  "text": "2 guys work into   a bar, but the third... DUCKS! :-)",
+  "analyzer": "standard"
+}
+
+POST /_analyze
+{
+  "text": "2 guys work into   a bar, but the third... DUCKS! :-)",
+  "char_filter": [],
+  "tokenizer": "standard",
+  "filter": ["lowercase"]
+}
+
+# no-op / no changes applied: used for exact match search
+POST /_analyze
+{
+  "text": "2 guys work into   a bar, but the third... DUCKS! :-)",
+  "analyzer": "keyword"
+}
