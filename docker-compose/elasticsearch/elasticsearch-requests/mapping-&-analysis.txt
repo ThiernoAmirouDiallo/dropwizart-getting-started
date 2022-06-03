@@ -19,3 +19,255 @@ POST /_analyze
   "text": "2 guys work into   a bar, but the third... DUCKS! :-)",
   "analyzer": "keyword"
 }
+
+PUT /review
+{
+  "mappings": {
+    "properties": {
+      "rating": { "type": "float" },
+      "content": {"type": "text"},
+      "product_id": {"type": "integer"},
+      "author": {
+        "properties": {
+          "first_name": {"type": "text"},
+          "last_name": {"type": "text"},
+          "email": {"type": "keyword"}
+        }
+      }
+    }
+  }
+}
+
+# dot notation in field names
+PUT /review_dot_notation
+{
+  "mappings": {
+    "properties": {
+      "rating": { "type": "float" },
+      "content": {"type": "text"},
+      "product_id": {"type": "integer"},
+      "author.first_name": {"type": "text"},
+      "author.last_name": {"type": "text"},
+      "author.email": {"type": "keyword"}
+    }
+  }
+}
+
+PUT /review/_doc/1
+{
+  "rating": 5.0,
+  "content": "Outstanding course! Learning a lot during this course",
+  "product_id": 123,
+  "author": {
+    "first_name": "Thierno Amirou",
+    "last_name": "Diallo",
+    "email": "thierno@gmail.com"
+  }
+}
+PUT /review/_doc/2
+{
+  "rating": 3.0,
+  "content": "Not very interesting. Too much noise.",
+  "product_id": 456,
+  "author": {
+    "first_name": "Thierno Amirou",
+    "last_name": "Diallo",
+    "email": "thierno@gmail.com"
+  }
+}
+
+
+GET /review/_doc/1
+
+# retrieving mappings
+GET /review/_mapping
+GET /review/_mapping/field/content
+GET /review/_mapping/field/author.email
+
+# updating a mapping
+PUT /review/_mapping
+{
+  "properties": {
+    "created_at": {
+      "type": "date"
+    }
+  }
+}
+
+GET /review/_mapping
+
+# re-indexing
+PUT /review_new
+{
+  "mappings" : {
+    "properties" : {
+      "author" : {
+        "properties" : {
+          "email" : {
+            "type" : "keyword"
+          },
+          "first_name" : {
+            "type" : "text"
+          },
+          "last_name" : {
+            "type" : "text"
+          }
+        }
+      },
+      "content" : {
+        "type" : "text"
+      },
+      "created_at" : {
+        "type" : "date"
+      },
+      "produc_id" : {
+        "type" : "long"
+      },
+      "product_id" : {
+        "type" : "keyword"
+      },
+      "rating" : {
+        "type" : "float"
+      }
+    }
+  }
+}
+
+POST /_reindex
+{
+  "source": {
+    "index": "review"
+
+  },
+  "dest": {
+    "index": "review_new"
+  }
+}
+
+# re-indexing and change product_id source data type
+POST /_reindex
+{
+  "source": {
+    "index": "review",
+    "_source": ["content", "cretated", "rating" ],
+    "query": {
+      "range": {
+        "rating": {
+          "gte": 4,
+          "lte": 5
+        }
+      }
+    }
+  },
+  "dest": {
+    "index": "review_new"
+  },
+  "script": {
+    "source": """
+      if (ctx._source.product_id != null) {
+        ctx._source.product_id = ctx._source.product_id.toString();
+      }
+      ctx._source.comment = ctx._source.remove("content");
+    """
+  }
+}
+
+GET /review/_search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+GET /review_new/_search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+# delete by search
+POST /review_new/_delete_by_query
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+
+# Field Alias
+PUT /review/_mapping
+{
+  "properties": {
+    "comment": {
+      "type": "alias",
+      "path": "content"
+    }
+  }
+}
+
+GET /review/_search
+{
+  "query": {
+    "match": {
+      "content": "outstanding"
+    }
+  }
+}
+GET /review/_search
+{
+  "query": {
+    "match": {
+      "comment": "outstanding"
+    }
+  }
+}
+
+# Multi field mappings
+PUT /multi_field_mappings
+{
+  "mappings": {
+    "properties": {
+      "description": { "type": "text" },
+      "ingredients": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          }
+        }
+      }
+    }
+  }
+}
+GET /multi_field_mappings/_mapping
+POST /multi_field_mappings/_doc
+{
+  "description": "To make scrambled eggs, you need to ...",
+  "ingredients": ["Eggs", "Salt", "Oil"]
+}
+
+GET /multi_field_mappings/_search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+GET /multi_field_mappings/_search
+{
+  "query": {
+    "match": {
+      "ingredients": "eggs"
+    }
+  }
+}
+# exact term match
+GET /multi_field_mappings/_search
+{
+  "query": {
+    "term": {
+      "ingredients.keyword": "Eggs"
+    }
+  }
+}
