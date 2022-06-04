@@ -271,3 +271,198 @@ GET /multi_field_mappings/_search
     }
   }
 }
+
+# mapping template
+PUT /_template/access-logs
+{
+  "index_patterns": ["access-logs-*"],
+  "settings": {
+    "number_of_shards": 2,
+    "number_of_replicas": 2,
+    "index.mapping.coerce": false
+  },
+  "mappings": {
+    "properties": {
+      "@timestamp": { "type": "date" },
+      "url.original": {"type": "keyword"},
+      "http.request.refferer": {"type": "keyword"},
+      "http.reponse.status_code": {"type": "long"}
+    }
+  }
+}
+GET /_template/access-logs
+
+PUT /access-logs-2022-06-03
+
+GET /access-logs-2022-06-03
+
+# dynamic mapping
+PUT /people
+{
+  "mappings": {
+    "dynamic": false,
+    "properties": {
+      "first_name": { "type": "text" }
+    }
+  }
+}
+
+GET /people/_mapping
+
+POST /people/_doc
+{
+  "first_name": "thierno",
+  "last_name": "diallo"
+}
+
+GET /people/_search
+{
+  "query": {
+    "match": {
+      "first_name": "thierno"
+    }
+  }
+}
+
+GET /people/_search
+{
+  "query": {
+    "match": {
+      "last_name": "diallo"
+    }
+  }
+}
+
+DELETE /people
+
+PUT /people
+{
+  "mappings": {
+    "dynamic": "strict",
+    "properties": {
+      "first_name": { "type": "text" }
+    }
+  }
+}
+
+POST /people/_doc
+{
+  "first_name": "thierno",
+  "last_name": "diallo"
+}
+
+# numeric and date detection
+PUT /computers
+{
+  "mappings": {
+    "dynamic": true,
+    "date_detection": true,
+    "dynamic_date_formats": ["yyyy-MM-dd"],
+    "numeric_detection": true,
+    "properties": {
+      "first_name": { "type": "text", "analyzer": "english" }
+    }
+  }
+}
+
+# custum analyzer
+POST /_analyze
+{
+  "char_filter": ["html_strip"],
+  "text": "I'am in a &lt;em&gt;good&lt;/em&gt; mood and I &lt;strong&gt;love&lt;/strong&gt; açaí!"
+}
+POST /_analyze
+{
+  "char_filter": ["html_strip"],
+  "text": "I'am in a <em>good</em> mood and I <strong>love</strong> açaí!"
+}
+
+PUT /analyzer_test
+{
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "my_custum_analyzer": {
+          "type": "custom",
+          "char_filter": ["html_strip"],
+          "tokenizer": "standard",
+          "filter": ["lowercase", "stop", "asciifolding"]
+        }
+      }
+    }
+  }
+}
+
+POST /analyzer_test/_analyze
+{
+  "analyzer": "my_custum_analyzer",
+  "text": "I'am in a <em>good</em> mood and I <strong>love</strong> the açaí!"
+}
+
+# non english stop filter example
+DELETE /french_stop_test
+PUT /french_stop_test
+{
+  "settings": {
+    "analysis": {
+      "filter": {
+        "french_stop": {
+          "type": "stop",
+          "stopwords": "_french_"
+        }
+      },
+      "analyzer": {
+        "my_custum_analyzer": {
+          "type": "custom",
+          "char_filter": ["html_strip"],
+          "tokenizer": "standard",
+          "filter": ["lowercase", "french_stop", "asciifolding"]
+        }
+      }
+    }
+  }
+}
+POST /french_stop_test/_analyze
+{
+  "analyzer": "my_custum_analyzer",
+  "text": "je suis dans un <em>bon</em> état et j'aime <strong>beaucoup</strong> le à du de le ce açaí!"
+}
+
+# updating index analyser settings
+POST /analyzer_test/_close
+
+# modifying an existing analyzer
+PUT /analyzer_test/_settings
+{
+  "analysis": {
+      "analyzer": {
+        "my_custum_analyzer": {
+          "type": "custom",
+          "char_filter": ["html_strip"],
+          "tokenizer": "standard",
+          "filter": ["lowercase", "asciifolding"]
+        }
+      }
+    }
+}
+# adding a new analyser
+PUT /analyzer_test/_settings
+{
+  "analysis": {
+      "analyzer": {
+        "my_second_analyzer": {
+          "type": "custom",
+          "char_filter": ["html_strip"],
+          "tokenizer": "standard",
+          "filter": ["lowercase", "stop", "asciifolding"]
+        }
+      }
+    }
+}
+
+GET /analyzer_test/_settings
+
+POST /analyzer_test/_open
+
+# reindexing all document to use the latest version of the analyser
+POST /analyzer_test/_update_by_query?conflicts=proceed
