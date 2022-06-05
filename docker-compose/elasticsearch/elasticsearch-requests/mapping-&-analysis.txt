@@ -296,7 +296,7 @@ PUT /access-logs-2022-06-03
 
 GET /access-logs-2022-06-03
 
-# dynamic mapping
+# enabling/disbling dynamic mapping
 PUT /people
 {
   "mappings": {
@@ -306,6 +306,111 @@ PUT /people
     }
   }
 }
+
+
+
+# dynamic templates
+PUT /dynamic_template_test
+{
+    "mappings": {
+      "dynamic_templates": [
+        {
+          "integers": {
+            "match_mapping_type": "long",
+            "mapping": {
+              "type": "integer"
+            }
+          }
+        }
+      ]
+    }
+}
+POST /dynamic_template_test/_doc
+{
+  "in_stock": 123
+}
+GET /dynamic_template_test/_mapping
+
+PUT /dynamic_template_sting_test
+{
+    "mappings": {
+      "dynamic_templates": [
+        {
+          "strings": {
+            "match_mapping_type": "string",
+            "mapping": {
+              "type": "text",
+              "fields": {
+                "type": "keyword",
+                "ignore_above": 512
+              }
+            }
+          }
+        }
+      ]
+    }
+}
+
+PUT /dynamic_template_field_name_match_test
+{
+    "mappings": {
+      "dynamic_templates": [
+        {
+          "strings_only_text": {
+            "match_mapping_type": "string",
+            "match": "text_*",
+            "mapping": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "strings_only_keyword": {
+            "match_mapping_type": "string",
+            "match": "*_keyword",
+            "mapping": {
+              "type": "keyword"
+            }
+          }
+        },
+        {
+          "strings_only_regexp_name": {
+            "match_mapping_type": "string",
+            "match": "^[a-zA-Z]_name$",
+            "match_pattern": "regex",
+            "mapping": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "strings_only_employee_name": {
+            "match_mapping_type": "string",
+            "path_match": "employee.name.*",
+            "mapping": {
+              "type": "text",
+              "copy_to": "full_name"
+            }
+          }
+        },
+        {
+          "no_doc_values": {
+            "match_mapping_type":"*",
+            "mapping": {
+              "type": "{dynamic_type}",
+              "doc_values": false
+            }
+          }
+        }
+      ]
+    }
+}
+POST /dynamic_template_field_name_match_test/_doc
+{
+  "text_description": "this is a short description",
+  "type_keyword" : ["dynamic", "mapping"]
+}
+GET /dynamic_template_field_name_match_test/_mapping
 
 GET /people/_mapping
 
