@@ -1,0 +1,85 @@
+# searching with request URI
+GET /products/_search?q=*
+GET /products/_search?q=name:lobster
+GET /products/_search?q=tags:Meat AND name:Tuna
+
+
+# searching with query DSL
+GET /products/_search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+# understanding relevance scoring
+GET /products/_search
+{
+  "explain": false,
+  "query": {
+    "term": {
+      "name": {
+        "value": "lobster"
+      }
+    }
+  }
+}
+
+# debuging with explain api
+GET /products/_explain/55
+{
+  "query": {
+    "term": {
+      "name": "lobster"
+    }
+  }
+}
+
+# using filter context: no relevance score calculated
+GET /products/_search
+{
+  "explain": true,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "term": {
+            "name": {
+              "value": "lobster"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+## Term level queries are not analyzed
+
+GET /products/_search
+{
+  "query": {
+    "term": {
+      "name": "lobster"
+    }
+  }
+}
+
+GET /products/_search
+{
+  "query": {
+    "term": {
+      "name": "Lobster"
+    }
+  }
+}
+
+## Full-text queries are analyzed
+GET /products/_search
+{
+  "query": {
+    "match": {
+      "name": "Lobster"
+    }
+  }
+}
