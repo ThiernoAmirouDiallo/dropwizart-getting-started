@@ -1,0 +1,160 @@
+# term level queries
+GET /products/_search
+{
+  "query": {
+    "term": {
+      "is_active": "true"
+    }
+  }
+}
+
+GET /products/_search
+{
+  "query": {
+    "term": {
+      "is_active": {"value": "true"}
+    }
+  }
+}
+
+# Multiple terms
+GET /products/_search
+{
+  "query": {
+    "terms": {
+      "tags.keyword": [
+        "Soup",
+        "Cake"
+      ]
+    }
+  }
+}
+
+# searching by IDs
+GET /products/_search
+{
+  "query": {
+    "ids": {
+      "values": [1, 2, 3, 60]
+    }
+  }
+}
+
+# ranges queries
+GET /products/_search
+{
+  "query": {
+    "range": {
+      "in_stock": {
+        "gte": 1,
+        "lte": 5
+      }
+    }
+  }
+}
+
+GET /products/_search
+{
+  "query": {
+    "range": {
+      "created": {
+        "gte": "2010/01/01",
+        "lte": "2010/12/31"
+      }
+    }
+  }
+}
+
+GET /products/_search
+{
+  "query": {
+    "range": {
+      "created": {
+        "gte": "2010-01-01",
+        "lte": "2010-12-31",
+        "format": "yyyy-MM-dd"
+      }
+    }
+  }
+}
+
+# relative date | date math
+GET /products/_search
+{
+  "query": {
+    "range": {
+      "created": {
+        "gte": "2010/01/01||-1y-1d"
+      }
+    }
+  }
+}
+
+# substracting 1y 1d and rounding down
+GET /products/_search
+{
+  "query": {
+    "range": {
+      "created": {
+        "gte": "2010/01/01||-1y-1d/M"
+      }
+    }
+  }
+}
+# using current timestamp rounding down before substracting 1 y
+GET /products/_search
+{
+  "query": {
+    "range": {
+      "created": {
+        "gte": "now||/M-1y"
+      }
+    }
+  }
+}
+
+# matching non null values
+GET /products/_search
+{
+  "query": {
+    "exists": {
+      "field": "tags"
+    }
+  }
+}
+
+# matching based on prefix
+GET /products/_search
+{
+  "query": {
+    "prefix": {
+      "tags.keyword": {
+        "value": "Vege"
+      }
+    }
+  }
+}
+
+# searching with wild cards
+GET /products/_search
+{
+  "query": {
+    "wildcard": {
+      "tags.keyword": {
+        "value": "Veg*t?*"
+      }
+    }
+  }
+}
+
+# searching with regexp
+GET /products/_search
+{
+  "query": {
+    "regexp": {
+      "tags.keyword": {
+        "value": "Veg.*t[a-zA-Z]*"
+      }
+    }
+  }
+}
