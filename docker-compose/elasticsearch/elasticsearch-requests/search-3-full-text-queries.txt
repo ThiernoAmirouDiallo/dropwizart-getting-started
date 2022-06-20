@@ -1,0 +1,84 @@
+# term level queries
+GET /recipe/_mapping
+
+
+GET /recipe/_search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+# matching phrases
+GET /recipe/_search
+{
+  "query": {
+    "match": {
+      "title": "Recipes with pasta or spaghetti"
+    }
+  }
+}
+
+# changing the default operator from "or" to "and"
+GET /recipe/_search
+{
+  "query": {
+    "match": {
+      "title": {
+        "query": "pasta spaghetti",
+        "operator": "and"
+      }
+    }
+  }
+}
+
+# matching phrases
+GET /recipe/_search
+{
+  "query": {
+    "match_phrase": {
+      "title": "spaghetti puttanesca"
+    }
+  }
+}
+
+# matching multiple fields
+GET /recipe/_search
+{
+  "query": {
+    "multi_match": {
+      "query": "pasta",
+      "fields": ["title", "description"]
+    }
+  }
+}
+
+# exercice solution
+GET /recipe/_search
+{
+  "query": {
+    "match": {
+      "title": "pasta with parmesan an spinach"
+    }
+  }
+}
+
+GET /recipe/_search
+{
+  "query": {
+    "match_phrase": {
+      "title": "carbonara pasta"
+    }
+  }
+}
+
+
+GET /recipe/_search
+{
+  "query": {
+    "multi_match": {
+      "query": "pasta pesto",
+      "fields": ["title", "description"]
+    }
+  }
+}
