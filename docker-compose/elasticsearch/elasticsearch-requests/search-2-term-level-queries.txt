@@ -158,3 +158,74 @@ GET /products/_search
     }
   }
 }
+
+#                              Exercice solution
+# product not sold a lot
+GET /products/_search
+{
+  "query": {
+    "range": {
+      "sold": {
+        "lt": 10
+      }
+    }
+  }
+}
+
+GET /products/_search
+{
+  "query": {
+    "range": {
+      "sold": {
+        "gte": 10,
+        "lt": 30
+      }
+    }
+  }
+}
+
+# Meat in the tags
+GET /products/_search
+{
+  "query": {
+    "term": {
+      "tags.keyword": {"value": "Meat"}
+    }
+  }
+}
+
+# Tomato" or "Paste" in the tags field
+GET /products/_search
+{
+  "query": {
+    "terms": {
+      "name.keyword": [
+        "Tomato", "Paste"
+      ]
+    }
+  }
+}
+
+# products with name starting with "Past"
+GET /products/_search
+{
+  "query": {
+    "wildcard": {
+      "name.keyword": {
+        "value": "Past*"
+      }
+    }
+  }
+}
+
+# product that contain a number in their name
+GET /products/_search
+{
+  "query": {
+    "regexp": {
+      "name.keyword": {
+        "value": "[0-9]+"
+      }
+    }
+  }
+}
