@@ -1,0 +1,172 @@
+# term level queries
+GET /recipe/_search
+{
+  "explain": true,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "ingredients.name": "parmesan"
+          }
+        }
+      ],
+      "must_not": [
+        {
+          "match": {
+            "ingredients.name": "tuna"
+          }
+        }
+      ],
+      "should": [
+        {
+          "match": {
+            "ingredients.name": "parsley"
+          }
+        }
+      ],
+      "filter": [
+        {
+          "range": {
+            "preparation_time_minutes": {
+              "lte": 15
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+# named queries for debuging matching queries
+GET /recipe/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "ingredients.name": {
+              "query": "parmesan",
+              "_name": "parmesan_must"
+            }
+          }
+        }
+      ],
+      "must_not": [
+        {
+          "match": {
+            "ingredients.name": {
+              "query": "tuna",
+              "_name": "tuna_must_not"
+            }
+          }
+        }
+      ],
+      "should": [
+        {
+          "match": {
+            "ingredients.name": {
+              "query": "parsley",
+              "_name": "parseley_should"
+            }
+          }
+        }
+      ],
+      "filter": [
+        {
+          "range": {
+            "preparation_time_minutes": {
+              "lte": 15
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+# must query uses bool query internally after analysing the terms
+# with or operator
+GET /recipe/_search
+{
+  "query": {
+    "match": {
+      "title": "pasta carbonara"
+    }
+  }
+}
+# is equivalent to
+GET /recipe/_search
+{
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "term": {
+            "title": "pasta"
+          }
+        },
+        {
+          "term": {
+            "title": "carbonara"
+          }
+        }
+      ]
+    }
+  }
+}
+
+# and operator
+GET /recipe/_search
+{
+  "query": {
+    "match": {
+      "title": {
+        "query": "pasta carbonara",
+        "operator": "and"
+      }
+    }
+  }
+}
+# is equivalent to
+GET /recipe/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "title": "pasta"
+          }
+        },
+        {
+          "term": {
+            "title": "carbonara"
+          }
+        }
+      ]
+    }
+  }
+}
+
+# one term match is equivalent to one terme query
+GET /recipe/_search
+{
+  "query": {
+    "match": {
+      "title": {
+        "query": "pasta"
+      }
+    }
+  }
+}
+# is equivalent to
+GET /recipe/_search
+{
+  "query": {
+    "term": {
+      "title": "pasta"
+    }
+  }
+}
