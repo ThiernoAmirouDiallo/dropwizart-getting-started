@@ -1,0 +1,11 @@
+# nested queries
+https://github.com/codingexplained/complete-guide-to-elasticsearch/tree/master/Joining%20Queries
+
+# Controlling Query Results
+https://github.com/codingexplained/complete-guide-to-elasticsearch/tree/master/Controlling%20Query%20Results
+
+# Aggregations
+https://github.com/codingexplained/complete-guide-to-elasticsearch/tree/master/Aggregations
+
+# Improving search results
+https://github.com/codingexplained/complete-guide-to-elasticsearch/tree/master/Improving%20Search%20Results
