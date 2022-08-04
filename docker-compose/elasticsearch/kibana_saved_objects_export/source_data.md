@@ -1,0 +1,1 @@
+https://github.com/codingexplained/data-visualization-with-kibana/blob/master/test-data.zip
