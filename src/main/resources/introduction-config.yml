@@ -1,6 +1,21 @@
 useJpa: true
 template: Hello, %s!
 defaultName: Stranger
+server:
+    applicationConnectors:
+    #    - type: http
+    #      port: 8080
+        - type: https
+    #      port: 8443
+          port: 8080
+          keyStorePath: /usr/local/bin/client-identity.p12
+#          keyStorePath: /Users/thiernoamiroudiallo/src/dropwizart-getting-started/keystore/client-identity.p12
+          keyStorePassword: passwordval
+    #      keyStoreType: JKS
+          keyStoreType: PKCS12
+    #      supportedProtocols: [TLSv1, TLSv1.1, TLSv1.2]
+          supportedProtocols: [TLSv1.2]
+          validateCerts: false
 logging:
     level: INFO
     loggers:

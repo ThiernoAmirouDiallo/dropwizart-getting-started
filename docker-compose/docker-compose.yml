@@ -24,8 +24,8 @@ services:
             - 5432:5432
         networks:
             -   prometheus-network
-        volumes:
-            - ./data/db:/var/lib/postgresql/data
+#        volumes:
+#            - ./data/db:/var/lib/postgresql/data
         env_file:
             - database.env
         environment:
