@@ -1,6 +1,11 @@
 useJpa: true
 template: Hello, %s!
 defaultName: Stranger
+keyStoreConfig:
+    prometheus:
+        keyStorePath: /usr/local/bin/client-identity.p12
+#        keyStorePath: /Users/thiernoamiroudiallo/src/dropwizart-getting-started/keystore/client-identity.p12
+        keyStorePassword: passwordval
 server:
     applicationConnectors:
     #    - type: http
